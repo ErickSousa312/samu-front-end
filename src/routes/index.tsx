@@ -1,9 +1,7 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
-import Login from '../pages/login';
-import DashboardPage from '../pages/dashboard';
-import Orders from '../pages/orders';
+import { DashboardPage, DriversPage, LabelsPage, LoginPage, LogisticPage, Orders, RegisterClientPage, RegisterDriverPage } from '../pages';
 
 
 
@@ -12,12 +10,15 @@ const Routers = () => {
  
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<LoginPage />} />
 
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="orders" element={<Orders />} />
-          {/* <PrivateRoute path="/driver" roles={['admin', 'driver']} element={<DriverDashboard />} />
-          <PrivateRoute path="/orders" roles={['admin', 'driver', 'user']} element={<UserOrders />} /> */}
+          <Route path="logistic" element={<LogisticPage />} />
+          <Route path='drivers' element={<DriversPage />} />
+          <Route path='labels' element={ <LabelsPage />} />
+          <Route path='registerdriver' element={<RegisterDriverPage />} />
+          <Route path='registerclient' element={<RegisterClientPage />} />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
