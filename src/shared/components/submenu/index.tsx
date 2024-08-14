@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import { MdAssignmentAdd } from 'react-icons/md';
+import { IoIosArrowUp } from "react-icons/io";
+import { IoIosArrowDown } from "react-icons/io";
+import { Link, useNavigate } from 'react-router-dom';
 
 const SubMenu = () => {
   const [activeButton, setActiveButton] = useState<number | null>(null);
   const [submenuOpenState, setSubmenuOpenState] = useState<{ [key: number]: boolean }>({});
+
+  const navigate = useNavigate()
 
   const handleButtonClick = (buttonIndex: number): void => {
     setActiveButton(buttonIndex);
@@ -15,23 +20,23 @@ const SubMenu = () => {
   };
 
   return (
-    <div className="space-y-2">
-      <div className={`flex justify-between items-center cursor-pointer hover:text-[#CF4E29] duration-200  ${submenuOpenState[1] ? ' ' : ''}`} onClick={() => handleButtonClick(1)}>
+    <div className="space-y-2 w-full ">
+      <div className={`flex justify-around items-center cursor-pointer  duration-200  ${submenuOpenState[1] ? ' ' : ''}`} onClick={() => handleButtonClick(1)}>
         <div className='flex items-center '>
-        <MdAssignmentAdd className="mr-3" />
-        <span>Cadastrar</span>
+        <MdAssignmentAdd size={32} className="mr-3" />
+        <span className="text-xl ">Cadastrar</span>
         </div>
-        <button className={`text-sm font-bold  ${submenuOpenState[1] ? 'rotate-180' : ''}`}>
-          {submenuOpenState ? '▲' : '▼'}
+        <button className={`text-sm font-bold ml-20  ${submenuOpenState[1] ? 'rotate-180' : ''}`}>
+          {submenuOpenState ? <IoIosArrowDown size={20} /> : <IoIosArrowUp size={20} /> }
         </button>
       </div>
-      <div className={`overflow-hidden transition-all duration-300 ${submenuOpenState[1] ? 'h-auto' : 'h-0'}`}>
-          <div className="flex items-center gap-2 px-6 py-2 cursor-pointer">
-            <button>Motorista</button>        
-          </div>
-          <div className="flex items-center gap-2 px-6 py-2 cursor-pointer">
-            <button>Cliente</button>          
-          </div>
+      <div className={`overflow-hidden  transition-all duration-300 ${submenuOpenState[1] ? 'h-auto ' : 'h-0'}`}>
+          <Link to="/registerdriver" className="flex items-center gap-2 px-6 py-2 cursor-pointer">
+            <span className='border-l-2 px-2 hover:scale-105'>Motorista</span>        
+          </Link>
+          <Link to="/registerclient" className="flex items-center gap-2 px-6 py-2 cursor-pointer">
+            <span className='border-l-2 px-2 hover:scale-105'>Cliente</span>          
+          </Link>
       </div>
     </div>
   );
