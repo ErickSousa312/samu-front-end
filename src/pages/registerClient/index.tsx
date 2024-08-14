@@ -1,18 +1,16 @@
-
 import { Content, Header, SideBar } from '../../shared/components'
+import FormClient from './formClient'
 
-import OrdersList from './orderslist'
-
-const Orders = () => {
+const RegisterClientPage = () => {
   return (
     <div className="flex flex-col h-screen w-screen">
-    <Header title='Pedidos'/>
+    <Header title='Cadastrar Cliente'/>
     <div className="flex flex-row flex-grow">
       <SideBar />
-      <Content content={<OrdersList />} />
+      <Content content={<FormClient />} />
     </div>
   </div>
   )
 }
 
-export default Orders
+export default RegisterClientPage

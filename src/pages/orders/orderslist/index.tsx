@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ModalOrder from "../modalOrder";
 import { FaPlusSquare } from "react-icons/fa";
-
+import CreateOrder from "../modalCreateOrder";
+import api from "../../../shared/services/api";
 
 interface Order {
   _id: string;
@@ -20,14 +21,15 @@ const OrdersList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [ordersPerPage] = useState(6);
+  const [ordersPerPage] = useState(5);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showCreateOrder, setShowCreateOrder] = useState(false)
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get<Order[]>("http://localhost:5000/api/admin/orders/all");
+        const response = await axios.get<Order[]>(`${api.baseURL}/api/admin/orders/all`);
         setOrders(response.data);
       } catch (err) {
         setError("Erro ao carregar os pedidos");
@@ -61,6 +63,15 @@ const OrdersList = () => {
     setShowModal(false);
   };
 
+  const openModalCreateOrder = () => {
+    setShowCreateOrder(true);
+
+  };
+
+  const closeModalCreateOrder = () => {
+    setShowCreateOrder(false);
+  };
+
   const handleEdit = () => {
     // Implementar lógica para editar o pedido
     console.log("Editar pedido", selectedOrder);
@@ -75,50 +86,56 @@ const OrdersList = () => {
 
   return (
     <>
-    <button className="flex justify-center items-center text-center self-start mx-12 bg-[#CF4E29] p-2 rounded-xl w-40">Criar Pedido <FaPlusSquare /></button>
-    <div className="flex flex-col gap-4 p-4">
-      {currentOrders.map((order) => (
-        <div
-          key={order._id}
-          className="bg-[#3d3d3d] p-4 rounded flex items-center justify-between text-white shadow-md w-[700px] cursor-pointer"
-          onClick={() => openModal(order)}
-        >
-          <div className="flex flex-col">
-          <h3 className="text-lg font-bold">Pedido #{order._id}</h3>
-          <p><strong>Endereço:</strong> {order.address}</p>
+      <button className="flex justify-center items-center font-semibold text-center text-white border-amber-600 hover:text-black border-2 self-start mx-12 hover:bg-amber-600 hover:-translate-y-1 p-2 rounded-xl w-40 duration-300" onClick={openModalCreateOrder}>Criar Pedido <FaPlusSquare className="ml-2 " /></button>
+      <div className="flex flex-wrap justify-center items-center gap-4 p-4 w-full">
+        {currentOrders.map((order) => (
+          <div
+            key={order._id}
+            className="bg-[#3d3d3d] p-4 rounded flex items-center justify-between text-white shadow-md w-full cursor-pointer"
+            onClick={() => openModal(order)}
+          >
+            <div className="flex flex-col">
+            <h3 className="text-lg font-bold">Pedido #{order._id}</h3>
+            <p><strong>Endereço:</strong> {order.address}</p>
+            </div>
+    
+            <p className="bg-green-500 flex justify-center items-center p-4 rounded-full h-12 ">{order.status}</p>
           </div>
-  
-          <p className="bg-green-500 flex justify-center items-center p-4 rounded-full h-12 ">{order.status}</p>
+        ))}
+
+        <div className="flex justify-between w-full items-center mt-4">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="bg-blue-500 text-white p-2 rounded"
+          >
+            Anterior
+          </button>
+          <span className="text-white">Página {currentPage} de {totalPages}</span>
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="bg-blue-500 text-white p-2 rounded"
+          >
+            Próxima
+          </button>
         </div>
-      ))}
 
-      <div className="flex justify-between mt-4">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="bg-blue-500 text-white p-2 rounded"
-        >
-          Anterior
-        </button>
-        <span className="text-white">Página {currentPage} de {totalPages}</span>
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="bg-blue-500 text-white p-2 rounded"
-        >
-          Próxima
-        </button>
+        {showCreateOrder && (
+          <CreateOrder 
+            onClose={closeModalCreateOrder}
+          />
+        )}
+
+        {showModal && selectedOrder && (
+          <ModalOrder
+            order={selectedOrder}
+            onClose={closeModal}
+            onEdit={handleEdit}
+            onEmitLabel={handleEmitLabel}
+          />
+        )}
       </div>
-
-      {showModal && selectedOrder && (
-        <ModalOrder
-          order={selectedOrder}
-          onClose={closeModal}
-          onEdit={handleEdit}
-          onEmitLabel={handleEmitLabel}
-        />
-      )}
-    </div>
     </>
     
   );

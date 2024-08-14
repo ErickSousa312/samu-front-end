@@ -1,18 +1,16 @@
-
 import { Content, Header, SideBar } from '../../shared/components'
+import FormDriver from './formDriver'
 
-import OrdersList from './orderslist'
-
-const Orders = () => {
+const RegisterDriverPage = () => {
   return (
     <div className="flex flex-col h-screen w-screen">
-    <Header title='Pedidos'/>
+    <Header title='Cadastrar Motorista'/>
     <div className="flex flex-row flex-grow">
       <SideBar />
-      <Content content={<OrdersList />} />
+      <Content content={<FormDriver />} />
     </div>
   </div>
   )
 }
 
-export default Orders
+export default RegisterDriverPage

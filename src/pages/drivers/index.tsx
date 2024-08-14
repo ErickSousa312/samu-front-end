@@ -1,10 +1,10 @@
 import { Content, Header, SideBar } from "../../shared/components"
 import Test from "./teste"
 
-const DashboardPage = () => {
+const DriversPage = () => {
   return (
     <div className="flex flex-col h-screen w-screen">
-    <Header />
+    <Header title='Motoristas'/>
     <div className="flex flex-row flex-grow">
       <SideBar />
       <Content content={<Test />} />
@@ -13,4 +13,4 @@ const DashboardPage = () => {
   )
 }
 
-export default DashboardPage
+export default DriversPage
