@@ -42,7 +42,7 @@ const CreateOrder = ({ onClose }: CreateOrderProps) => {
 
         const onSubmit = async (data: OrderFormData) => {
           try {
-            await axios.post(`${api.baseURL}/api/admin/orders`, data);
+            await api.post(`/api/admin/orders`, data);
             console.log("Pedido criado com sucesso");
             onClose();
           } catch (err) {

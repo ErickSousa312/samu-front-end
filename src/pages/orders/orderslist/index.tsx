@@ -29,7 +29,7 @@ const OrdersList = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get<Order[]>(`${api.baseURL}/api/admin/orders/all`);
+        const response = await api.get<Order[]>(`/admin/orders/all`);
         setOrders(response.data);
       } catch (err) {
         setError("Erro ao carregar os pedidos");
