@@ -4,10 +4,10 @@ import Test from "./teste"
 const DriversPage = () => {
   return (
     <div className="flex flex-col h-screen w-screen">
-    <Header title='Motoristas'/>
+    <Header />
     <div className="flex flex-row flex-grow">
       <SideBar />
-      <Content content={<Test />} />
+      <Content title="Motoristas" content={<Test />} />
     </div>
   </div>
   )
