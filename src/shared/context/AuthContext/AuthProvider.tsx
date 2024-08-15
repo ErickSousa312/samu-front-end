@@ -1,46 +1,51 @@
-import React, { useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { hasRole, login, logout } from '../../../utils/AuthHelpers';
-import AuthContext from './AuthContext';
+import axios from 'axios';
 
-interface User {
-  id: string;
-  role: 'admin' | 'driver' | 'user';
-  name: string;
-  email: string;
+interface AuthContextType {
+  user: { role: string } | null;
+  login: (token: string) => void;
+  logout: () => void;
+  isAuthenticated: boolean;
 }
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<{ role: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
     if (token) {
-      const decodedUser: User = JSON.parse(atob(token.split('.')[1]));
-      setUser(decodedUser);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      axios.get('/api/user').then((response) => setUser(response.data)).catch(() => logout());
     }
-  }, [token]);
+  }, []);
+
+  const login = (token: string) => {
+    localStorage.setItem('token', token);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.get('/api/user').then((response) => setUser(response.data));
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    navigate('/');
+  };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        login: (userData: User, token: string) => login(userData, token, setUser, setToken),
-        logout: () => logout(setUser, setToken, navigate),
-        hasRole: (roles: string[]) => hasRole(roles, user),
-      }}
-    >
+    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth deve ser usado dentro de AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
