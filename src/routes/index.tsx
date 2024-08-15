@@ -1,29 +1,77 @@
-
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { DashboardPage, DriversPage, LabelsPage, LoginPage, LogisticPage, Orders, RegisterClientPage, RegisterDriverPage } from '../pages';
+import { AuthProvider } from '../shared/context';
+import { useAuth } from '../shared/context/AuthContext/AuthProvider';
+import { ReactNode } from 'react';
 
-
+const ProtectedRoute = ({ children }: { children: ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  
+  return isAuthenticated ? children : <Navigate to="/" />;
+};
 
 const Routers = () => {
   return (
- 
-      <Router>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
+    <Router>
+    <AuthProvider>
 
-          <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="logistic" element={<LogisticPage />} />
-          <Route path='drivers' element={<DriversPage />} />
-          <Route path='labels' element={ <LabelsPage />} />
-          <Route path='registerdriver' element={<RegisterDriverPage />} />
-          <Route path='registerclient' element={<RegisterClientPage />} />
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
 
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </Router>
+      <Route
+        path="orders"
+        element={
+          <ProtectedRoute>
+            <Orders />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="logistic"
+        element={
+          <ProtectedRoute>
+            <LogisticPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="drivers"
+        element={
+          <ProtectedRoute>
+            <DriversPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="labels"
+        element={
+          <ProtectedRoute>
+            <LabelsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="registerdriver"
+        element={
+          <ProtectedRoute>
+            <RegisterDriverPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="registerclient"
+        element={
+          <ProtectedRoute>
+            <RegisterClientPage />
+          </ProtectedRoute>
+        }
+      />
 
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
+
+    </AuthProvider>
+    </Router>
   );
 };
 
