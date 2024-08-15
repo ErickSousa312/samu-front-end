@@ -1,32 +1,42 @@
+import { useForm, SubmitHandler } from 'react-hook-form';
+import axios from 'axios';
+import { useAuth } from '../../shared/context/AuthContext/AuthProvider';
+import api from '../../shared/services/api';
+import { useNavigate } from 'react-router-dom';
+
+interface LoginFormInputs {
+  email: string;
+  password: string;
+}
 
 const LoginPage = () => {
+  const { register, handleSubmit } = useForm<LoginFormInputs>();
+  const { login } = useAuth();
+
+  const navigate = useNavigate();
+
+  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+    try {
+      const response = await api.post(`/signin`, data);
+      login(response.data.token);
+      if (response.status === 200) {
+        navigate('/orders');
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded shadow-lg w-80">
-        <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
-        <form >
-          <input
-            type="text"
-            placeholder="Usuário"
-
-            className="p-2 mb-4 border rounded w-full"
-          />
-          <input
-            type="password"
-            placeholder="Senha"
-
-            className="p-2 mb-4 border rounded w-full"
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-          >
-            Entrar
-          </button>
-        </form>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className='flex flex-col justify-center items-center h-screen gap-4'>
+      <input {...register('email')} placeholder="Email" />
+      <input {...register('password')} placeholder="Password" type="password" />
+      <button type="submit">Login</button>
       </div>
-    </div>
+
+     
+    </form>
   );
 };
 
