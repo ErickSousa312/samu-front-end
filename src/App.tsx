@@ -4,9 +4,9 @@ function App() {
   
 
   return (
-    <>
+    <div className="bg-[#161617]">
      <Routers />
-    </>
+    </div>
   )
 }
 
