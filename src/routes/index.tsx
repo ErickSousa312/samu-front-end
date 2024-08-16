@@ -1,14 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { DashboardPage, DriversPage, LabelsPage, LoginPage, LogisticPage, Orders, RegisterClientPage, RegisterDriverPage } from '../pages';
+import { DriversPage, LabelsPage, LoginPage, LogisticPage, Orders, RegisterClientPage, RegisterDriverPage } from '../pages';
 import { AuthProvider } from '../shared/context';
-import { useAuth } from '../shared/context/AuthContext/AuthProvider';
-import { ReactNode } from 'react';
-
-const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const { isAuthenticated } = useAuth();
-  
-  return isAuthenticated ? children : <Navigate to="/" />;
-};
+import ProtectedRoute from '../shared/components/protectRoute';
 
 const Routers = () => {
   return (
@@ -21,7 +14,7 @@ const Routers = () => {
       <Route
         path="orders"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute roles={['admin', 'driver', 'customer']}>
             <Orders />
           </ProtectedRoute>
         }
@@ -29,7 +22,7 @@ const Routers = () => {
       <Route
         path="logistic"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute roles={['admin']}>
             <LogisticPage />
           </ProtectedRoute>
         }
@@ -37,7 +30,7 @@ const Routers = () => {
       <Route
         path="drivers"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute roles={['admin', 'driver']}>
             <DriversPage />
           </ProtectedRoute>
         }
@@ -45,7 +38,7 @@ const Routers = () => {
       <Route
         path="labels"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute roles={['admin', 'driver']}>
             <LabelsPage />
           </ProtectedRoute>
         }
@@ -53,7 +46,7 @@ const Routers = () => {
       <Route
         path="registerdriver"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute roles={['admin']}>
             <RegisterDriverPage />
           </ProtectedRoute>
         }
@@ -61,7 +54,7 @@ const Routers = () => {
       <Route
         path="registerclient"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute roles={['admin']}>
             <RegisterClientPage />
           </ProtectedRoute>
         }
