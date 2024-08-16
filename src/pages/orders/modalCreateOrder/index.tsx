@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import api from "../../../shared/services/api";
+import { useToast } from "../../../shared/context/ToastContext";
 
 interface CreateOrderProps {
     onClose: () => void;
@@ -21,6 +21,8 @@ const orderSchema = z.object({
 type OrderFormData = z.infer<typeof orderSchema>;
 
 const CreateOrder = ({ onClose }: CreateOrderProps) => {
+    const { addToast } = useToast();
+
     const {
         register,
         handleSubmit,
@@ -30,61 +32,80 @@ const CreateOrder = ({ onClose }: CreateOrderProps) => {
     });
 
     const inputFields = {
-        status: { label: "Status", type: "text" },
-        userName: { label: "Nome do Usuário", type: "text" },
-        address: { label: "Endereço", type: "text" },
-        price: { label: "Preço", type: "number" },
-        plano: { label: "Plano", type: "text" },
-        phone: { label: "Telefone", type: "text" },
-        email: { label: "Email", type: "email" },
+        status: { placeholder: "Status", type: "text" },
+        userName: { placeholder: "Nome do Usuário", type: "text" },
+        address: { placeholder: "Endereço", type: "text" },
+        price: { placeholder: "Preço", type: "number" },
+        plano: { placeholder: "Plano", type: "text" },
+        phone: { placeholder: "Telefone", type: "text" },
+        email: { placeholder: "Email", type: "email" },
     };
-
 
         const onSubmit = async (data: OrderFormData) => {
           try {
-            await api.post(`/api/admin/orders`, data);
-            console.log("Pedido criado com sucesso");
+            addToast({ type: 'loading', message: 'Aguarde, estamos processando seu pedido...' });
+
+            await api.post(`/orders`, data);
+            addToast({ type: 'success', message: 'Pedido criado com sucesso!' });
             onClose();
           } catch (err) {
+            addToast({ type: 'error', message: 'Falha ao criar pedido.' });
             console.error("erro na criação de pedidos", err);
           } 
         };
 
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900/50">
-            <div className="bg-white p-6 rounded w-[700px]">
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    {Object.entries(inputFields).map(([name, { label, type }]) => (
-                        <div key={name} className="mb-4">
-                            <label className="block text-gray-700">{label}</label>
-                            <input
-                                type={type}
-                                {...register(name as keyof OrderFormData,
-                                    name === "price" ? { valueAsNumber: true } : {}
-                                )}
-                                className="mt-1 p-2 border rounded w-full"
-                            />
-                            {errors[name as keyof OrderFormData] && (
-                                <span className="text-red-500">
-                                    {errors[name as keyof OrderFormData]?.message}
-                                </span>
-                            )}
+         <div className="fixed inset-0 flex items-center justify-center bg-gray-900/50">
+            <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+                <div className="absolute inset-0 bg-gradient-to-r  from-amber-300  to-amber-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl">
+                </div>
+                <div className="relative px-4 py-10 bg-[#141414] shadow-lg sm:rounded-3xl sm:p-20  ">
+                    <div className="max-w-md mx-auto flex flex-col justify-center items-center ">
+                        <div>
+                            <h1 className="text-2xl text-white font-semibold">Crie o seu pedido</h1>
                         </div>
-                    ))}
-                    <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-                        Salvar
-                    </button>
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="ml-4 bg-gray-500 text-white p-2 rounded"
-                    >
-                        Fechar
-                    </button>
-                </form>
+                        <div className="py-6 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                            <form onSubmit={handleSubmit(onSubmit)}  className="flex flex-col justify-center items-center">
+                                <div className="grid grid-cols-2 gap-12">
+                                    {Object.entries(inputFields).map(([name, { placeholder, type }]) => (
+                                        <div key={name} className="">
+                                            <input
+                                                type={type}
+                                                placeholder={placeholder}
+                                                {...register(name as keyof OrderFormData,
+                                                    name === "price" ? { valueAsNumber: true } : {}
+                                                )}
+                                                className="mt-1 bg-transparent text-white p-2 border rounded "
+                                            />
+                                            {errors[name as keyof OrderFormData] && (
+                                                <span className="text-red-500">
+                                                    {errors[name as keyof OrderFormData]?.message}
+                                                </span>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                    <div className="flex justify-center items-center gap-4 my-8 w-full">
+                                    <button type="submit" className="bg-blue-500 w-full text-white p-2 rounded">
+                                        Salvar
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={onClose}
+                                        className=" bg-gray-500  w-full text-white p-2 rounded"
+                                    >
+                                        Fechar
+                                    </button>
+                                    </div>
+
+                        </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+         </div>
+      
     );
 };
 
