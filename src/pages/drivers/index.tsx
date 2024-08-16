@@ -1,5 +1,5 @@
 import { Content, Header, SideBar } from "../../shared/components"
-import Test from "./teste"
+import DetailsDrivers from "./detailsdrivers"
 
 const DriversPage = () => {
   return (
@@ -7,7 +7,7 @@ const DriversPage = () => {
     <Header />
     <div className="flex flex-row flex-grow">
       <SideBar />
-      <Content title="Motoristas" content={<Test />} />
+      <Content title="Motoristas" content={<DetailsDrivers />} />
     </div>
   </div>
   )
