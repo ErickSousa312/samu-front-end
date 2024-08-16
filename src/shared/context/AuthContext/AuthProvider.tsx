@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import api from '../../services/api';
 
 interface AuthContextType {
-  user: { role: string } | null;
-  login: (token: string) => void;
+  user: { role: string, email: string, username: string, id: string } | null;
+  login: (token: string, email: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -12,25 +13,37 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<{ role: string } | null>(null);
+  const [user, setUser] = useState<{ role: string, email: string, username: string, id: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
+    const storedUser = localStorage.getItem('user');
+
+    if (token && storedUser) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      axios.get('/api/user').then((response) => setUser(response.data)).catch(() => logout());
+      setUser(JSON.parse(storedUser)); // Restaura os dados do usuário
     }
   }, []);
 
-  const login = (token: string) => {
+  const login = async (token: string, email: string) => {
     localStorage.setItem('token', token);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get('/api/user').then((response) => setUser(response.data));
+
+    try {
+      const response = await api.get(`/users/email/${email}`);
+      const userData = response.data;
+      setUser(userData);
+
+      // Salva os dados do usuário no localStorage
+      localStorage.setItem('user', JSON.stringify(userData));
+    } catch (error) {
+      console.error("Erro ao buscar dados do usuário:", error);
+    }
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
     navigate('/');
   };
