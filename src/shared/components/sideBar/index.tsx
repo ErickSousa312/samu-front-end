@@ -48,7 +48,7 @@ const SideBar = () => {
           </li>
         )}
 
-        {(user?.role === 'admin') && (
+        {(user?.role === 'admin' || user?.role === 'driver') && (
           <Link
             to="/labels"
             className="flex items-center p-4 hover:bg-amber-600 hover:text-black rounded-xl my-2 hover:font-bold duration-200 cursor-pointer"
