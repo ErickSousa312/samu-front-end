@@ -33,12 +33,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const response = await api.get(`/users/email/${email}`);
       const userData = response.data;
       setUser(userData);
-
+    
       // Salva os dados do usuário no localStorage
       localStorage.setItem('user', JSON.stringify(userData));
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao buscar dados do usuário:", error);
+      if (error.response && error.response.status === 500) {
+        alert("Erro no servidor. Por favor, tente novamente mais tarde.");
+      } else {
+        alert("Erro ao buscar os dados do usuário.");
+      }
     }
+    
   };
 
   const logout = () => {
