@@ -6,10 +6,10 @@ import DetailsLogistic from './details'
 const LogisticPage = () => {
   return (
     <div className="flex flex-col h-screen w-screen">
-    <Header title='Logistica'/>
+    <Header />
     <div className="flex flex-row flex-grow">
       <SideBar />
-      <Content content={<DetailsLogistic />} />
+      <Content title='Logistica' content={<DetailsLogistic />} />
     </div>
   </div>
   )

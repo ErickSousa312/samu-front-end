@@ -4,10 +4,10 @@ import FormClient from './formClient'
 const RegisterClientPage = () => {
   return (
     <div className="flex flex-col h-screen w-screen">
-    <Header title='Cadastrar Cliente'/>
+    <Header />
     <div className="flex flex-row flex-grow">
       <SideBar />
-      <Content content={<FormClient />} />
+      <Content title='Cadastrar Cliente' content={<FormClient />} />
     </div>
   </div>
   )

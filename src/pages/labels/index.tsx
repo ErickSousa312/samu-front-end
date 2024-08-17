@@ -1,13 +1,13 @@
 import { Content, Header, SideBar } from '../../shared/components'
-import QrCode from './qrcode'
+import OrderLabels from './orderlist'
 
 const LabelsPage = () => {
   return (
         <div className="flex flex-col h-screen w-screen">
-        <Header title='Etiquetas'/>
+        <Header />
         <div className="flex flex-row flex-grow">
           <SideBar />
-          <Content content={<QrCode />} />
+          <Content title='Etiquetas' content={<OrderLabels />} />
         </div>
       </div>
   )

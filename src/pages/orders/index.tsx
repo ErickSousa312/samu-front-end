@@ -6,10 +6,10 @@ import OrdersList from './orderslist'
 const Orders = () => {
   return (
     <div className="flex flex-col h-screen w-screen">
-    <Header title='Pedidos'/>
+    <Header/>
     <div className="flex flex-row flex-grow">
       <SideBar />
-      <Content content={<OrdersList />} />
+      <Content title='Pedidos' content={<OrdersList />} />
     </div>
   </div>
   )

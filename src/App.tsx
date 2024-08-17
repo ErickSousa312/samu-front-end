@@ -1,12 +1,16 @@
 import Routers from "./routes"
+import { ToastProvider } from "./shared/context/ToastContext"
 
 function App() {
   
 
   return (
-    <>
-     <Routers />
-    </>
+    <div className="bg-[#161617]">
+      <ToastProvider>
+        <Routers />
+      </ToastProvider>
+
+    </div>
   )
 }
 
