@@ -6,8 +6,8 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); // Função que limpa o estado do usuário
-    navigate("/login"); // Redireciona para a página de login
+    logout();
+    navigate("/login"); 
   };
 
   return (
