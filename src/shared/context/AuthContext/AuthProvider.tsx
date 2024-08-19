@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('token', token);
 
     try {
-      const response = await axios.get(`/users/email/${email}`, {
+      const response = await axios.get(`https://libras.helpdesk-maraba.cloud/users/email/${email}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
