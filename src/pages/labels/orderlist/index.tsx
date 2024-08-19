@@ -158,7 +158,7 @@ const OrderLabels = () => {
             <QRCode
               size={340}
               className="my-4"
-              value={`https://api-logistic-1.onrender.com/pdf/${selectedQrCode._id}`}
+              value={`https://5170-170-233-149-18.ngrok-free.app/pdf/${selectedQrCode._id}`}
             />
             <button
               onClick={closeModalQrCode}
