@@ -4,7 +4,7 @@ import axios from "axios";
 const token = localStorage.getItem("token")
 
 const api = axios.create({
-    baseURL: 'http://localhost:4002',
+    baseURL: 'https://api-logistic-1.onrender.com/',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
