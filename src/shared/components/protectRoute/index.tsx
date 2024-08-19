@@ -1,5 +1,4 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext/AuthProvider';
 import { ReactNode } from 'react';
 
 interface ProtectedRouteProps {
@@ -7,16 +6,13 @@ interface ProtectedRouteProps {
   roles: string[];
 }
 
+type userStorage = { role: string, email: string, username: string, id: string } | null;
+
 const ProtectedRoute = ({ children, roles }: ProtectedRouteProps) => {
-  const { isAuthenticated, user } = useAuth();
-
-  console.log( isAuthenticated, user )
-
-   if (!user) {
-     return null
-   }
-
-   if (!isAuthenticated || !roles.includes(user.role)) {
+  const userLocalStorage = localStorage.getItem('user');
+  const userFromStorage:userStorage = JSON.parse(userLocalStorage || 'null');
+  
+  if (!userLocalStorage || !roles.includes(userFromStorage!.role)) {
      return <Navigate to="/" />;
    }
 

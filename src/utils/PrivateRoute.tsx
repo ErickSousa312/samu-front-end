@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Navigate } from 'react-router-dom';
+import { Route, useNavigate } from 'react-router-dom';
 import { useAuth } from '../shared/context/AuthContext/AuthProvider';
 
 interface PrivateRouteProps {
@@ -9,11 +9,12 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute = ({ element, path }: PrivateRouteProps) => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   console.log("user DATA verify", user)
+  console.log("entrou aqui")
   if (!user) {
-    // Redireciona para login se não estiver autenticado
-    return <Navigate to="/" replace />;
+    navigate('/');
   }
 
   // if (!user.role(roles)) {

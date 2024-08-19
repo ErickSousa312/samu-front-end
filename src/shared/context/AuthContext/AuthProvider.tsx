@@ -1,11 +1,12 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 
 interface AuthContextType {
   user: { role: string, email: string, username: string, id: string } | null;
-  login: (token: string, email: string) => void;
+  login: (token: string, email: string) => Promise<boolean | undefined>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -27,19 +28,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (token: string, email: string) => {
-    localStorage.setItem('token', token);
-
-    try {
-      const response = await axios.get(`https://libras.helpdesk-maraba.cloud/users/email/${email}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      const userData = response.data;
-      setUser(userData);
-    
-      // Salva os dados do usuário no localStorage
-      localStorage.setItem('user', JSON.stringify(userData));
+      try{
+        const dataInsertLocalStorage = await new Promise(async (resolve) => {
+          localStorage.setItem('token', token);
+            const response = await axios.get(`https://libras.helpdesk-maraba.cloud/users/email/${email}`, {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+            const userData = response.data;
+            setUser(userData);
+            Cookies.set('user', JSON.stringify(userData), { expires: 7 });
+            localStorage.setItem('user', JSON.stringify(userData));
+            resolve(true)
+          })
+          if(dataInsertLocalStorage){
+            return true
+          }
+          return false
     } catch (error: any) {
       console.error("Erro ao buscar dados do usuário:", error);
       if (error.response && error.response.status === 500) {
