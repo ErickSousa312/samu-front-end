@@ -10,10 +10,10 @@ interface PrivateRouteProps {
 
 const PrivateRoute = ({ element, path }: PrivateRouteProps) => {
   const { user } = useAuth();
-
+  console.log("user DATA verify", user)
   if (!user) {
     // Redireciona para login se não estiver autenticado
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // if (!user.role(roles)) {
