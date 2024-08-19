@@ -4,7 +4,7 @@ import axios from "axios";
 const token = localStorage.getItem("token")
 
 const api = axios.create({
-    baseURL: 'https://api-logistic-1.onrender.com/',
+    baseURL: 'https://libras.helpdesk-maraba.cloud/',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
