@@ -22,6 +22,9 @@ const OrdersList = () => {
   const { addToast } = useToast();
   const { user } = useAuth();
 
+  console.log(loading);
+  console.log(error);
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {

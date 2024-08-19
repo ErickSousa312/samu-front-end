@@ -3,16 +3,13 @@ import { useState } from 'react';
 import { MdAssignmentAdd } from 'react-icons/md';
 import { IoIosArrowUp } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const SubMenu = () => {
-  const [activeButton, setActiveButton] = useState<number | null>(null);
   const [submenuOpenState, setSubmenuOpenState] = useState<{ [key: number]: boolean }>({});
 
-  const navigate = useNavigate()
 
   const handleButtonClick = (buttonIndex: number): void => {
-    setActiveButton(buttonIndex);
     setSubmenuOpenState((prevState) => ({
       ...prevState,
       [buttonIndex]: !prevState[buttonIndex],

@@ -8,18 +8,18 @@ interface PrivateRouteProps {
   path: string;
 }
 
-const PrivateRoute = ({ roles, element, path }: PrivateRouteProps) => {
-  const { user, hasRole } = useAuth();
+const PrivateRoute = ({ element, path }: PrivateRouteProps) => {
+  const { user } = useAuth();
 
   if (!user) {
     // Redireciona para login se não estiver autenticado
     return <Navigate to="/login" replace />;
   }
 
-  if (!hasRole(roles)) {
-    // Redireciona para a página de não autorizado ou dashboard principal
-    return <Navigate to="/unauthorized" replace />;
-  }
+  // if (!user.role(roles)) {
+  //   // Redireciona para a página de não autorizado ou dashboard principal
+  //   return <Navigate to="/unauthorized" replace />;
+  // }
 
   return <Route path={path} element={element} />;
 };
