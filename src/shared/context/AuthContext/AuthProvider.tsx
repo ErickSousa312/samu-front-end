@@ -30,7 +30,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('token', token);
 
     try {
-      const response = await api.get(`/users/email/${email}`);
+      const response = await axios.get(`/users/email/${email}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       const userData = response.data;
       setUser(userData);
     
