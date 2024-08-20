@@ -17,7 +17,6 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   let idCounter = 1;
 
   const addToast = (toast: Omit<Toast, 'id'>) => {
-    // Replace existing loading toast with the new one
     setToasts(prevToasts => {
       const updatedToasts = prevToasts.filter(t => !(t.type === 'loading' && toast.type !== 'loading'));
       return [...updatedToasts, { ...toast, id: idCounter++ }];
@@ -34,7 +33,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   return (
     <ToastContext.Provider value={{ addToast }}>
       {children}
-      <div className="fixed top-0 right-0 p-4 space-y-2">
+      <div className="fixed top-14 right-0 p-4 space-y-2">
         {toasts.map((toast) => (
           <div
             key={toast.id}

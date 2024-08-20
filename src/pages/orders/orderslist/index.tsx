@@ -17,7 +17,7 @@ const OrdersList = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showCreateOrder, setShowCreateOrder] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // Estado para a barra de pesquisa
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const { addToast } = useToast();
   const { user } = useAuth();
@@ -59,7 +59,6 @@ const OrdersList = () => {
     }
   };
 
-  // Filtra pedidos com base no termo de pesquisa
   const filteredOrders = orders.filter(order => {
     const matchesSearchTerm = order.userName.toLowerCase().includes(searchTerm.toLowerCase()) || order.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = selectedStatus ? order.status === selectedStatus : true;
@@ -147,7 +146,7 @@ const OrdersList = () => {
       </div>
 
 
-      <div className="flex  flex-wrap justify-center items-center gap-4 p-4 w-full">
+      <div className="flex flex-wrap justify-center items-center gap-4 p-4 w-full">
       {currentOrders.map((order) => (
           <div
             key={order._id}

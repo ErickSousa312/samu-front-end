@@ -28,7 +28,7 @@ const DetailsLogistic = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="flex py-12">
+      <div className="flex flex-col md:flex-row gap-8 py-12">
         <Card count={customerCount} description="Quantidade de clientes cadastrados" text="Clientes" link="/registerclient"/>
         <Card count={driverCount} description="Quantidade de motoristas cadastrados" text="Motoristas" link="/registerdriver"/>
       </div>

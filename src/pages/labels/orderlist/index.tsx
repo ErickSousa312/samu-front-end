@@ -86,14 +86,14 @@ const OrderLabels = () => {
   }
 
   return (
-    <div className="p-8 w-full">
+    <div className="p-0 md:p-8 w-full">
 
       <div className="my-8">
         <InputSearch
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          selectedStatus={selectedStatus} // Adicionei o status selecionado
-          onStatusChange={(e) => setSelectedStatus(e.target.value)} // Adicionei o handler para mudar o status
+          selectedStatus={selectedStatus}
+          onStatusChange={(e) => setSelectedStatus(e.target.value)}
         />
       </div>
 
@@ -101,22 +101,22 @@ const OrderLabels = () => {
         {currentOrders.map((order) => (
           <div
             key={order._id}
-            className="bg-[#3d3d3d] p-4 rounded flex items-center justify-between text-white shadow-md w-full cursor-pointer hover:-translate-y-1 hover:opacity-70 duration-200"
+            className="bg-[#3d3d3d] p-4 rounded flex-col flex md:flex-row items-center justify-between text-white shadow-md w-full cursor-pointer hover:-translate-y-1 hover:opacity-70 duration-200"
             onClick={() => openModal(order)}
           >
             <div className="flex flex-col">
-              <h3 className="text-lg font-bold">Pedido #{order._id}</h3>
-              <p><strong>Endereço:</strong> {order.address}</p>
+              <h3 className="text-sm md:text-lg font-bold">Pedido #{order._id}</h3>
+              <p className="text-sm md:text-lg"><strong>Endereço:</strong> {order.address}</p>
             </div>
-            <div className="flex items-center">
-              <p className="bg-green-500 flex justify-center items-center p-4 rounded-full h-12 mr-4">
+            <div className="flex items-center w-full md:w-44">
+              <p className="bg-green-500 text-sm md:text-base  flex justify-center w-full md:w-24 items-center m-2 rounded-full h-10 md:h-12">
                 {order.status}
               </p>
               <FaQrcode
                 className="text-white cursor-pointer"
                 size={24}
                 onClick={(e) => {
-                  e.stopPropagation(); // Impede a propagação do evento de clique para o pai
+                  e.stopPropagation();
                   openModalQrCode(order);
                 }}
               />

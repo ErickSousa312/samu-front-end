@@ -72,7 +72,7 @@ const SideBar = () => {
       </button>
 
           {isOpen && (
-            <div className={`fixed top-0 pt-8 left-0 w-full bg-[#121212] text-white z-50 transition-transform duration-300 ${isOpen ? 'translate-y-0' : '-translate-y-full'} lg:hidden`}>
+            <div className={`fixed top-0 pt-8 left-0 w-full border-b-2 border-amber-600 bg-[#121212] text-white z-50 transition-transform duration-300 ${isOpen ? 'translate-y-0' : '-translate-y-full'} lg:hidden`}>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="lg:hidden absolute self-end top-4 right-4 z-50 text-white"

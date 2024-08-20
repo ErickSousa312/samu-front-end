@@ -10,7 +10,6 @@ interface ModalOrderProps {
   onDelete?: () => Promise<void>;
 }
 
-// Define the fields that will be displayed in the modal
 const fields = [
   { key: 'userName', label: 'Cliente', type: 'text' },
   { key: 'status', label: 'Status', type: 'select', options: ['Entregue', 'Pendente', 'Cancelado'] },
@@ -54,7 +53,7 @@ const ModalOrder = ({ order, isClient = false, readOnly = false, onClose, onEdit
         </span>
         <div className="purple_border p-8 border border-black">
           <h3 className="text-lg font-bold mb-4">Detalhes do Pedido ID: {order._id}</h3>
-          <div className="grid grid-cols-2 md:flex md:flex-col gap-4 md:gap-0">
+          <div className="grid grid-cols-2 gap-4">
           {fields.map(({ key, label, type, options }) => (
             <div key={key} className="mb-4">
               <label><strong>{label}:</strong></label>

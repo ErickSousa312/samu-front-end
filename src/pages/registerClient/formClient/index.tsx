@@ -46,7 +46,7 @@ const onSubmit = async (data: OrderFormData) => {
     <div className='w-full h-full flex justify-start m-12  '>
       <div>
       <form onSubmit={handleSubmit(onSubmit)}  className="flex flex-col justify-center items-center">
-         <div className="flex gap-12">
+         <div className="flex flex-col md:flex-row gap-12">
             {Object.entries(inputFields).map(([name, { placeholder, type }]) => (
               <div key={name} className="flex flex-col gap-3">
                 <input

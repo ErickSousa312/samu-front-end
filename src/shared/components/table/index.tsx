@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../../shared/services/api";
-import { FaTrash, FaEdit } from "react-icons/fa"; // Importar ícones de edição e lixeira
+import { FaTrash, FaEdit } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext/AuthProvider";
 import { useToast } from "../../context/ToastContext";
 
@@ -15,8 +15,6 @@ interface User {
 interface TableProps {
   role: "customer" | "driver" | "admin";
 }
-
-
 
 const Table = ({ role }: TableProps) => {
   const [users, setUsers] = useState<User[]>([]);
@@ -39,15 +37,13 @@ const Table = ({ role }: TableProps) => {
         return "cliente";
     }
   };
-  
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await api.get('/users');
+        const response = await api.get("/users");
         const users = response.data;
 
-        // Filtra os usuários conforme a role passada como prop
         const filteredUsers = users.filter((user: User) => user.role === role);
         setUsers(filteredUsers);
 
@@ -59,8 +55,6 @@ const Table = ({ role }: TableProps) => {
 
     fetchUsers();
   }, [role, itemsPerPage]);
-
-  // O restante do código continua o mesmo...
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -96,7 +90,7 @@ const Table = ({ role }: TableProps) => {
       try {
         addToast({ type: "loading", message: `Aguarde enquanto o ${roleLabel} é deletado..` });
         await api.delete(`/users/${selectedUser._id}`);
-        setUsers(users.filter(user => user._id !== selectedUser._id));
+        setUsers(users.filter((user) => user._id !== selectedUser._id));
         addToast({ type: "success", message: `${roleLabel.charAt(0).toUpperCase() + roleLabel.slice(1)} deletado com sucesso!` });
         closeDeleteModal();
       } catch (error) {
@@ -111,15 +105,15 @@ const Table = ({ role }: TableProps) => {
       const roleLabel = getRoleLabel(selectedUser.role);
       try {
         addToast({ type: "loading", message: `Aguarde enquanto o ${roleLabel} é editado..` });
-        
+
         const updateUser = {
           ...selectedUser,
-          username: (document.getElementById('edit-username') as HTMLInputElement).value,
-          email: (document.getElementById('edit-email') as HTMLInputElement).value,
+          username: (document.getElementById("edit-username") as HTMLInputElement).value,
+          email: (document.getElementById("edit-email") as HTMLInputElement).value,
         };
-        
+
         await api.patch(`/users/${updateUser._id}`, updateUser);
-        setUsers(users.map(user => user._id === updateUser._id ? updateUser : user));
+        setUsers(users.map((user) => (user._id === updateUser._id ? updateUser : user)));
         addToast({ type: "success", message: `${roleLabel.charAt(0).toUpperCase() + roleLabel.slice(1)} editado com sucesso!` });
         closeEditModal();
       } catch (err) {
@@ -130,19 +124,33 @@ const Table = ({ role }: TableProps) => {
   };
 
   return (
-    <div className="relative overflow-x-auto w-[50vw] shadow-md sm:rounded-lg">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-300">
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table className="w-full text-sm text-left text-gray-300">
         <thead className="text-xs text-white uppercase bg-amber-600">
           <tr>
-            <th scope="col" className="px-6 py-3">Nome do {user?.role === "customer" ? "Cliente" : "Motorista"}</th>
-            <th scope="col" className="px-6 py-3">Email</th>
-            {user?.role === "admin" && <th scope="col" className="px-6 py-3">Ações</th>}
+            <th scope="col" className="px-6 py-3">
+              Nome do {user?.role === "customer" ? "Cliente" : "Motorista"}
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Email
+            </th>
+            {user?.role === "admin" && (
+              <th scope="col" className="px-6 py-3">
+                Ações
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
           {currentItems.map((users) => (
-            <tr key={users._id} className="border-b border-amber-600 bg-[#121212] hover:bg-slate-50 dark:hover:bg-slate-600">
-              <th scope="row" className="px-6 py-4 font-medium text-slate-900 whitespace-nowrap dark:text-white">
+            <tr
+              key={users._id}
+              className="border-b border-amber-600 bg-[#121212] hover:bg-slate-50 dark:hover:bg-slate-600"
+            >
+              <th
+                scope="row"
+                className="px-6 py-4 font-medium text-slate-900 whitespace-nowrap dark:text-white"
+              >
                 {users.username}
               </th>
               <td className="px-6 py-4">{users.email}</td>
@@ -162,7 +170,12 @@ const Table = ({ role }: TableProps) => {
           ))}
           {currentItems.length === 0 && (
             <tr className="border-b bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-600">
-              <td colSpan={3} className="px-6 py-4 text-center text-slate-500">Nenhum {role === "customer" ? "cliente" : "motorista"} encontrado</td>
+              <td
+                colSpan={3}
+                className="px-6 py-4 text-center text-slate-500"
+              >
+                Nenhum {role === "customer" ? "cliente" : "motorista"} encontrado
+              </td>
             </tr>
           )}
         </tbody>
@@ -188,11 +201,12 @@ const Table = ({ role }: TableProps) => {
         </button>
       </div>
 
-      {/* Modal de Exclusão */}
       {showDeleteModal && selectedUser && (
         <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg flex flex-col justify-center items-center">
-            <h2 className="text-lg font-bold mb-4">Tem certeza que deseja excluir {selectedUser.username}?</h2>
+            <h2 className="text-lg font-bold mb-4">
+              Tem certeza que deseja excluir {selectedUser.username}?
+            </h2>
             <div className="flex gap-4">
               <button
                 onClick={handleDeleteUser}
@@ -211,42 +225,45 @@ const Table = ({ role }: TableProps) => {
         </div>
       )}
 
-      {/* Modal de Edição */}
       {showEditModal && selectedUser && (
         <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg">
             <h2 className="text-lg font-bold mb-4">Editar Usuário</h2>
             <form>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">Nome</label>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Nome
+                </label>
                 <input
                   type="text"
                   id="edit-username"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
                   defaultValue={selectedUser.username}
+                  className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Email
+                </label>
                 <input
                   type="email"
                   id="edit-email"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
                   defaultValue={selectedUser.email}
+                  className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex gap-4">
                 <button
                   type="button"
                   onClick={handleEdit}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  className="bg-blue-500 text-white p-2 rounded"
                 >
                   Salvar
                 </button>
                 <button
                   type="button"
                   onClick={closeEditModal}
-                  className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                  className="bg-gray-500 text-white p-2 rounded"
                 >
                   Cancelar
                 </button>
@@ -259,4 +276,4 @@ const Table = ({ role }: TableProps) => {
   );
 };
 
-export default Table
+export default Table;
