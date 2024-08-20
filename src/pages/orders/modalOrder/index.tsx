@@ -3,12 +3,23 @@ import { Order } from "../../../@types";
 
 interface ModalOrderProps {
   order: Order | null;
-  isClient?: boolean; // Agora opcional
-  readOnly?: boolean; // Nova propriedade para tornar os campos somente leitura
+  isClient?: boolean;
+  readOnly?: boolean;
   onClose: () => void;
-  onEdit?: (updatedOrder: Order) => Promise<void>; // Agora opcional
-  onDelete?: () => Promise<void>; // Agora opcional
+  onEdit?: (updatedOrder: Order) => Promise<void>;
+  onDelete?: () => Promise<void>;
 }
+
+// Define the fields that will be displayed in the modal
+const fields = [
+  { key: 'userName', label: 'Cliente', type: 'text' },
+  { key: 'status', label: 'Status', type: 'select', options: ['Entregue', 'Pendente', 'Cancelado'] },
+  { key: 'address', label: 'Endereço', type: 'text' },
+  { key: 'price', label: 'Preço', type: 'text' },
+  { key: 'plano', label: 'Plano', type: 'text' },
+  { key: 'phone', label: 'Telefone', type: 'text' },
+  { key: 'email', label: 'Email', type: 'text' },
+];
 
 const ModalOrder = ({ order, isClient = false, readOnly = false, onClose, onEdit, onDelete }: ModalOrderProps) => {
   const [editedOrder, setEditedOrder] = useState<Order | null>(null);
@@ -27,92 +38,51 @@ const ModalOrder = ({ order, isClient = false, readOnly = false, onClose, onEdit
 
   if (!order) return null;
 
-  // Se readOnly for verdadeiro, todos os campos serão somente leitura
   const isFieldReadOnly = readOnly || isClient;
 
+  const handleChange = (key: keyof Order, value: any) => {
+    if (editedOrder) {
+      setEditedOrder({ ...editedOrder, [key]: value } as Order);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div className="relative m-16 bg-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
+      <div className="relative m-16 bg-white max-w-lg w-full ">
         <span className="absolute py-1 px-3 -left-8 -top-2 -rotate-[10deg] border border-black black_border bg-amber-600 text-white font-bold">
           Seu Pedido!
         </span>
         <div className="purple_border p-8 border border-black">
           <h3 className="text-lg font-bold mb-4">Detalhes do Pedido ID: {order._id}</h3>
-          <div>
-            <label><strong>Cliente:</strong></label>
-            <input
-              type="text"
-              value={editedOrder?.userName || ""}
-              onChange={(e) => setEditedOrder({ ...editedOrder, userName: e.target.value } as Order)}
-              readOnly={isFieldReadOnly}
-              className={isFieldReadOnly ? `input-field-client` : `input-field`}
-            />
-          </div>
-          <div>
-            <label><strong>Status:</strong></label>
-            <select
-              value={editedOrder?.status || ""}
-              onChange={(e) => setEditedOrder({ ...editedOrder, status: e.target.value } as Order)}
-              disabled={isFieldReadOnly}
-              className={isFieldReadOnly ? `input-field-client` : `input-field`}
-            >
-              <option value="Entregue">Entregue</option>
-              <option value="Pendente">Pendente</option>
-              <option value="Cancelado">Cancelado</option>
-            </select>
-          </div>
-          <div>
-            <label><strong>Endereço:</strong></label>
-            <input
-              type="text"
-              value={editedOrder?.address || ""}
-              onChange={(e) => setEditedOrder({ ...editedOrder, address: e.target.value } as Order)}
-              readOnly={isFieldReadOnly}
-              className={isFieldReadOnly ? `input-field-client` : `input-field`}
-            />
-          </div>
-          <div>
-            <label><strong>Preço:</strong></label>
-            <input
-              type="text"
-              value={editedOrder?.price || ""}
-              onChange={(e) => setEditedOrder({ ...editedOrder, price: parseFloat(e.target.value) } as Order)}
-              readOnly={isFieldReadOnly}
-              className={isFieldReadOnly ? `input-field-client` : `input-field`}
-            />
-          </div>
-          <div>
-            <label><strong>Plano:</strong></label>
-            <input
-              type="text"
-              value={editedOrder?.plano || ""}
-              onChange={(e) => setEditedOrder({ ...editedOrder, plano: e.target.value } as Order)}
-              readOnly={isFieldReadOnly}
-              className={isFieldReadOnly ? `input-field-client` : `input-field`}
-            />
-          </div>
-          <div>
-            <label><strong>Telefone:</strong></label>
-            <input
-              type="text"
-              value={editedOrder?.phone || ""}
-              onChange={(e) => setEditedOrder({ ...editedOrder, phone: e.target.value } as Order)}
-              readOnly={isFieldReadOnly}
-              className={isFieldReadOnly ? `input-field-client` : `input-field`}
-            />
-          </div>
-          <div>
-            <label><strong>Email:</strong></label>
-            <input
-              type="text"
-              value={editedOrder?.email || ""}
-              onChange={(e) => setEditedOrder({ ...editedOrder, email: e.target.value } as Order)}
-              readOnly={isFieldReadOnly}
-              className={isFieldReadOnly ? `input-field-client` : `input-field`}
-            />
+          <div className="grid grid-cols-2 md:flex md:flex-col gap-4 md:gap-0">
+          {fields.map(({ key, label, type, options }) => (
+            <div key={key} className="mb-4">
+              <label><strong>{label}:</strong></label>
+              {type === 'select' ? (
+                <select
+                  value={editedOrder?.[key] || ""}
+                  onChange={(e) => handleChange(key, e.target.value)}
+                  disabled={isFieldReadOnly}
+                  className={isFieldReadOnly ? `input-field-client` : `input-field`}
+                >
+                  {options?.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type={type}
+                  value={editedOrder?.[key] || ""}
+                  onChange={(e) => handleChange(key, type === 'text' ? e.target.value : parseFloat(e.target.value))}
+                  readOnly={isFieldReadOnly}
+                  className={isFieldReadOnly ? `input-field-client` : `input-field`}
+                />
+              )}
+            </div>
+          ))}
           </div>
 
-          <div className="flex justify-end mt-4 gap-2">
+          <div className="flex justify-center items-center mt-4 gap-2">
             {!isFieldReadOnly && (
               <>
                 {onEdit && (

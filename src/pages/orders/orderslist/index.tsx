@@ -127,10 +127,10 @@ const OrdersList = () => {
   const isClient = user.role === "customer";
 
   return (
-    <div className="p-8 w-full">
+    <div className="p-1 md:p-8 w-full">
       {!user || user.role !== "customer" ? (
         <button
-          className="flex justify-center items-center font-semibold text-center text-white border-amber-600 hover:text-black border-2 self-start hover:bg-amber-600 hover:-translate-y-1 p-2 mx-4 rounded-xl w-40 duration-300"
+          className="flex justify-center items-center font-semibold text-center text-white border-amber-600 hover:text-black border-2 mt-4 md:mt-0 self-start hover:bg-amber-600 hover:-translate-y-1 p-2 mx-4 rounded-xl w-40 duration-300"
           onClick={openModalCreateOrder}
         >
           Criar Pedido <FaPlusSquare className="ml-2" />
@@ -141,24 +141,24 @@ const OrdersList = () => {
         <InputSearch
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          selectedStatus={selectedStatus} // Adicionei o status selecionado
-          onStatusChange={(e) => setSelectedStatus(e.target.value)} // Adicionei o handler para mudar o status
+          selectedStatus={selectedStatus}
+          onStatusChange={(e) => setSelectedStatus(e.target.value)}
         />
       </div>
 
 
-      <div className="flex flex-wrap justify-center items-center gap-4 p-4 w-full">
+      <div className="flex  flex-wrap justify-center items-center gap-4 p-4 w-full">
       {currentOrders.map((order) => (
           <div
             key={order._id}
-            className="bg-[#3d3d3d] p-4 rounded flex items-center justify-between text-white shadow-md w-full cursor-pointer hover:-translate-y-1 hover:opacity-70 duration-200"
+            className="bg-[#3d3d3d] p-4 rounded flex-col flex md:flex-row items-center justify-between text-white shadow-md w-full cursor-pointer hover:-translate-y-1 hover:opacity-70 duration-200"
             onClick={() => openModal(order)}
           >
             <div className="flex flex-col">
-              <h3 className="text-lg font-bold">Pedido #{order._id}</h3>
-              <p><strong>Endereço:</strong> {order.address}</p>
+              <h3 className="text-sm md:text-lg font-bold">Pedido #{order._id}</h3>
+              <p className="text-sm md:text-lg"><strong>Endereço:</strong> {order.address}</p>
             </div>
-            <p className={`${getStatusColorClass(order.status)} flex justify-center items-center p-4 rounded-full h-12`}>
+            <p className={`${getStatusColorClass(order.status)} text-sm md:text-base  flex justify-center w-full md:w-24 items-center m-2 rounded-full h-10 md:h-12`}>
               {order.status}
             </p>
           </div>
