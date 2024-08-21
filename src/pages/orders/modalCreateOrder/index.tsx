@@ -18,7 +18,7 @@ const orderSchema = z.object({
   plano: z.string().min(1, "Plano é obrigatório"),
   phone: z.string().min(1, "Telefone é obrigatório"),
   email: z.string().email("Email inválido").optional(),
-  userId: z.string().optional(), // Inclua userId no esquema
+  userId: z.string().optional(), 
 });
 
 type OrderFormData = z.infer<typeof orderSchema>;
@@ -60,16 +60,18 @@ const CreateOrder = ({ onClose }: CreateOrderProps) => {
       const fetchUsers = async () => {
         try {
           const response = await api.get('/users');
-          setUsers(response.data);
+          const customers = response.data.filter((user: { role: string }) => user.role === 'customer');
+          setUsers(customers);
         } catch (err) {
           console.error("Erro ao buscar usuários", err);
         } finally {
           setLoading(false);
         }
       };
-
+    
       fetchUsers();
     }, []);
+    
 
    const handleUserSelect = (user: { email: string; id: string }) => {
     setSelectedUser(user);
@@ -97,7 +99,7 @@ const CreateOrder = ({ onClose }: CreateOrderProps) => {
   };
 
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-900/50">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50">
         <div className="relative py-3 sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-amber-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
           <div className="relative px-4 py-10 bg-[#141414] shadow-lg sm:rounded-3xl sm:p-20">

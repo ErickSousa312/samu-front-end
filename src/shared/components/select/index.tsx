@@ -3,7 +3,7 @@ import { IoIosArrowDown } from "react-icons/io";
 
 
 interface DropdownProps {
-  name: string; // Nome exibido no botão
+  name: string;
   options: { email: string; id: string }[];
   onSelect: (user: { email: string; id: string }) => void;
   initialSelectedItem?: { email: string; id: string };
@@ -44,7 +44,7 @@ const Dropdown = ({
   const handleItemSelect = (item: { email: string; id: string }) => {
     setSelectedItem(item);
     setIsOpen(false);
-    onSelect(item); // Passa o item selecionado para o onSelect
+    onSelect(item);
   };
 
   useEffect(() => {

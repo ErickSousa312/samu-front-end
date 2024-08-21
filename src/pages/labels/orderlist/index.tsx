@@ -17,7 +17,7 @@ const OrderLabels = () => {
   const [selectedQrCode, setSelectedQrCode] = useState<Order | null>(null);
   const [showModalQrCode, setShowModalQrCode] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // Estado para a barra de pesquisa
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const { user } = useAuth();
 
