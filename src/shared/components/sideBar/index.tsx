@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from "../../context/AuthContext/AuthProvider";
 import { LuPackageSearch } from "react-icons/lu";
-import { FaTruck } from "react-icons/fa";
+import { FaTruck, FaShoppingBag } from "react-icons/fa";
 import { MdLabel } from "react-icons/md";
 import { BiSolidObjectsVerticalCenter } from "react-icons/bi";
 import SubMenu from "../submenu";
@@ -57,6 +57,15 @@ const SideBar = () => {
             >
               <MdLabel size={32} className="mr-3" />
               <span className="text-xl">Etiquetas</span>
+            </Link>
+          )}
+          {(user?.role === 'admin' || user?.role === 'driver') && (
+            <Link
+              to="/freemarket"
+              className="flex items-center p-4 hover:bg-amber-600 hover:text-black rounded-xl my-2 hover:font-bold duration-200 cursor-pointer"
+            >
+              <FaShoppingBag size={32} className="mr-3" />
+              <span className="text-xl">Mercado Livre</span>
             </Link>
           )}
         </ul>
@@ -125,6 +134,16 @@ const SideBar = () => {
                   <span className="text-xl">Etiquetas</span>
                 </Link>
               )}
+              {(user?.role === 'admin' || user?.role === 'driver') && (
+                <Link
+                  to="/freemarket"
+                  className="flex items-center p-4 hover:bg-amber-600 hover:text-black rounded-xl my-2 hover:font-bold duration-200 cursor-pointer"
+                >
+                  <FaShoppingBag size={32} className="mr-3" />
+                  <span className="text-xl">Mercado Livre</span>
+                </Link>
+              )}
+              
             </ul>
           </div>
           )}

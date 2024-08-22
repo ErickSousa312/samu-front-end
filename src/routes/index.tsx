@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { DriversPage, LabelsPage, LoginPage, LogisticPage, Orders, RegisterClientPage, RegisterDriverPage } from '../pages';
 import { AuthProvider } from '../shared/context';
 import ProtectedRoute from '../shared/components/protectRoute';
+import FreeMarket from '../pages/mercadolivre';
 
 const Routers = () => {
   return (
@@ -56,6 +57,15 @@ const Routers = () => {
         element={
           <ProtectedRoute roles={['admin']}>
             <RegisterClientPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="freemarket"
+        element={
+          <ProtectedRoute roles={['admin', 'driver']}>
+            <FreeMarket />
           </ProtectedRoute>
         }
       />
