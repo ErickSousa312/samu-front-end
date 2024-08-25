@@ -1,38 +1,45 @@
-import { useForm} from 'react-hook-form';
-import axios from 'axios';
-
-
-interface LoginFormInputs {
-  email: string;
-  password: string;
-}
+import { useEffect, useState } from 'react';
+import api from '../../../shared/services/api';
+import OrderListFreeMarket from '../orderListMercadoLivre';
 
 const FormMarket = () => {
-  const { register, handleSubmit } = useForm<LoginFormInputs>();
+  const [redirectLogin, setRedirectLogin] = useState(false)
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get('https://api.helpdesk-maraba.cloud/api-ml/login/');
-      console.log('Data:', response.data);
-    } catch (error) {
-      console.error('Error fetching data:', error); 
-    }
-  };
+  const redirect = () => {
+    window.location.href = 'https://api.helpdesk-maraba.cloud/api-ml/login'
+  }
+
+  useEffect(() => {
+    const handleLogin = async () => {
+      try {
+        const response = await api.get("api-ml/verifyToken/");
+        if (response.status !== 200) {
+          return setRedirectLogin(!redirectLogin)
+        
+        }
+        console.log('Data:', response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error); 
+      }
+    };
+    
+    handleLogin()
+  
+  }, [])
 
   return (
-        <div className="relative py-3 sm:w-96 mx-auto text-center">
-          <span className="text-2xl font-light text-gray-100">Logue na sua conta!</span>
-          <div className="mt-4 bg-[#161617] shadow-md rounded-lg text-left">
-            <div className="h-2 bg-amber-400 rounded-t-md"></div>
-            <form onSubmit={handleSubmit(fetchData)} className="px-8 py-6 ">
-              <div className='flex flex-col justify-center items-center gap-4'>
-                <input type="email" {...register('email')} placeholder="Email" className="w-full h-5 px-3 py-5 my-8  bg-transparent border-b hover:outline-none focus:outline-none" />
-   
-                <input type="password" {...register('password')} placeholder="Senha" className="w-full h-5 mt6 px-3 py-5 bg-transparent border-b hover:outline-none focus:outline-none" />
-
-                <button type="submit" className="mt-4 bg-amber-500 text-white py-2 px-6 rounded-md hover:bg-amber-600 ">Login</button>  
-              </div>          
-            </form>          
+        <div className="py-3 sm:w-96 h-[50vh]  mx-auto flex items-center justify-center">
+          <div className="h-2 bg-amber-400 rounded-t-md"></div>
+          <div className="mt-4 bg-[#161617] shadow-md rounded-lg justify-center items-center">
+            
+          {redirectLogin &&
+            <button onClick={() => redirect()} formTarget='_blank' className='bg-white px-3 py-2 rounded-md'>
+              Logar na sua conta do Mercado Livre
+            </button>
+          } 
+          {!redirectLogin &&
+            <OrderListFreeMarket />
+          } 
           </div>
         </div>
    
