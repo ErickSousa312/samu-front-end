@@ -6,15 +6,12 @@ interface ProtectedRouteProps {
   roles: string[];
 }
 
-type userStorage = { role: string, email: string, username: string, id: string } | null;
-
 const ProtectedRoute = ({ children, roles }: ProtectedRouteProps) => {
-  const userLocalStorage = localStorage.getItem('user');
-  const userFromStorage:userStorage = JSON.parse(userLocalStorage || 'null');
+  const storedRole = localStorage.getItem('role');
   
-  if (!userLocalStorage || !roles.includes(userFromStorage!.role)) {
-     return <Navigate to="/" />;
-   }
+  if (!storedRole || !roles.includes(storedRole)) {
+    return <Navigate to="/" />;
+  }
 
   return children;
 };
