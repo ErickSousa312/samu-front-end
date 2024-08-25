@@ -7,6 +7,15 @@ export interface Order {
     plano: string;
     phone: string;
     email: string;
+    deliveryDate: Date;
     [key: string]: any;
-  }
+}
   
+export interface OrderMl {
+  id: string;
+  total_amount: number;
+  order_items: string[];
+  status: string;
+  tags: string[];
+  paid_amount: number;
+}
