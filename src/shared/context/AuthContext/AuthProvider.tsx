@@ -19,11 +19,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+    const storedRole = localStorage.getItem('role');
+    const storedUser = Cookies.get('user');
 
     if (token && storedUser) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setUser(JSON.parse(storedUser)); // Restaura os dados do usuário
+      const parsedUser = JSON.parse(storedUser);
+      setUser({ ...parsedUser, role: storedRole || parsedUser.role });
     }
   }, []);
 
@@ -31,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try{
         const dataInsertLocalStorage = await new Promise(async (resolve) => {
           localStorage.setItem('token', token);
-            const response = await axios.get(`https://libras.helpdesk-maraba.cloud/users/email/${email}`, {
+            const response = await axios.get(`https://api.helpdesk-maraba.cloud/users/email/${email}`, {
               headers: {
                 Authorization: `Bearer ${token}`
               }
@@ -39,13 +41,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const userData = response.data;
             setUser(userData);
             Cookies.set('user', JSON.stringify(userData), { expires: 7 });
-            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('role', userData.role);
             resolve(true)
           })
-          if(dataInsertLocalStorage){
-            return true
-          }
-          return false
+          return dataInsertLocalStorage ? true : false;
     } catch (error: any) {
       console.error("Erro ao buscar dados do usuário:", error);
       if (error.response && error.response.status === 500) {
@@ -59,7 +58,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('role'); // Remove a role ao fazer logout
+    Cookies.remove('user');
     setUser(null);
     navigate('/');
   };

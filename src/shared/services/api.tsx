@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: 'https://libras.helpdesk-maraba.cloud/',
+    baseURL: 'https://api.helpdesk-maraba.cloud/',
   });
 
 api.interceptors.request.use(
@@ -12,21 +12,18 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
 );
 
-// api.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   (error) => {
-//     if (error.response && error.response.status === 401) {
-//       window.location.href = '/';
-//     }
-//     return Promise.reject(error);
-//   }
-// );
+api.interceptors.response.use((response) => {
+  return response;
+}, (error) => {
+  if (error.response) {
+    const status = error.response.status;
+    if (status >= 200 && status < 600) {
+      return Promise.resolve(error.response);
+    }
+  }
+  return Promise.reject(error);
+});
 
 export default api
