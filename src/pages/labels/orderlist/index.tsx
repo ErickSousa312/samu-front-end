@@ -158,7 +158,7 @@ const OrderLabels = () => {
             <QRCode
               size={340}
               className="my-4"
-              value={`https://libras.helpdesk-maraba.cloud/pdf/${selectedQrCode._id}`}
+              value={`https://api.helpdesk-maraba.cloud/pdf/${selectedQrCode._id}`}
             />
             <button
               onClick={closeModalQrCode}
