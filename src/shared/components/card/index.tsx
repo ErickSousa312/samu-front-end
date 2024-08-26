@@ -3,14 +3,15 @@ import { Link } from "react-router-dom";
 interface CardProps {
     link: string;
     text: string;
-    count: number;
+    count?: number;
+    value?: number;
     description: string;
 }
 
-const Card = ({ link, text,  count, description }: CardProps) => {
+const Card = ({ link, text,  count, value, description }: CardProps) => {
   return (
         <div 
-            className="group relative cursor-pointer overflow-hidden bg-white px-6 pt-4 pb-4 shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 hover:-translate-y-1 rounded-lg hover:shadow-2xl  w-[80vw] md:w-80  sm:rounded-lg sm:px-6">
+            className="group relative cursor-pointer overflow-hidden bg-white px-6 pt-4 pb-4 shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 hover:-translate-y-1 rounded-lg hover:shadow-2xl max-w-2xl sm:rounded-lg sm:px-6">
             <span className="absolute top-4 z-0 h-12 w-12 rounded-full bg-amber-500 transition-all duration-300 group-hover:scale-[15]"></span>
             <div className="relative z-10 mx-auto max-w-md">      
                     <span className="grid h-12 w-12 place-items-center rounded-full bg-amber-500 transition-all duration-300 group-hover:bg-amber-400">
@@ -19,6 +20,7 @@ const Card = ({ link, text,  count, description }: CardProps) => {
                         </svg>
                     </span>
                     <p className="absolute top-0 right-0 md:top-0 md:right-8 text-4xl font-bold ">{count}</p>
+                    {value && <p className="absolute top-0 right-0 md:top-0 md:right-8 text-4xl font-bold ">R${value}</p>}
                 <div
                     className="space-y-6 pt-5 text-base leading-7 text-gray-600 transition-all duration-300 group-hover:text-white/90">
                     <p>{description}</p>
