@@ -17,7 +17,6 @@ const FormMarket = () => {
           return setRedirectLogin(!redirectLogin)
         
         }
-        console.log('Data:', response.data);
       } catch (error) {
         console.error('Error fetching data:', error); 
       }
@@ -28,9 +27,7 @@ const FormMarket = () => {
   }, [])
 
   return (
-        <div className="py-3 sm:w-96 h-[50vh]  mx-auto flex items-center justify-center">
-          <div className="h-2 bg-amber-400 rounded-t-md"></div>
-          <div className="mt-4 bg-[#161617] shadow-md rounded-lg justify-center items-center">
+        <div>
             
           {redirectLogin &&
             <button onClick={() => redirect()} formTarget='_blank' className='bg-white px-3 py-2 rounded-md'>
@@ -38,9 +35,11 @@ const FormMarket = () => {
             </button>
           } 
           {!redirectLogin &&
+          <div className='w-[70vw]'>
             <OrderListFreeMarket />
-          } 
           </div>
+
+          } 
         </div>
    
   );
