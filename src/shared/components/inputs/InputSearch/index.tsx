@@ -5,9 +5,10 @@ interface InputSearchProps {
   onChange: ChangeEventHandler<HTMLInputElement>;
   selectedStatus: string;
   onStatusChange: ChangeEventHandler<HTMLSelectElement>;
+  select?: boolean;
 }
 
-const InputSearch = ({ value, onChange, selectedStatus, onStatusChange }: InputSearchProps) => {
+const InputSearch = ({ value, onChange, selectedStatus, onStatusChange, select = true }: InputSearchProps) => {
   return (
     <div className="flex flex-col md:flex-row md:flex items-center p-1 md:p-2 mx-4 bg-white hover:shadow-lg hover:shadow-orange-500 rounded-xl duration-300">
       <div className="flex bg-gray-100 ml-0 md:ml-8 p-4 mt-2 md:mt-0 w-[90%] space-x-4 rounded-lg cursor-text">
@@ -23,16 +24,18 @@ const InputSearch = ({ value, onChange, selectedStatus, onStatusChange }: InputS
         />
       </div>
       <div className="flex py-3 px-0 md:px-4 w-[20vw] md:w-[14vw] rounded-lg text-gray-500 font-semibold cursor-pointer">
-        <select
-          value={selectedStatus}
-          onChange={onStatusChange}
-          className="bg-white text-blac font-semibold border focus:outline-none border-amber-300 rounded-md p-1 md:p-2"
-        >
-          <option value="" className="">Todos</option>
-          <option value="Entregue">Entregue</option>
-          <option value="Pendente">Pendente</option>
-          <option value="Cancelado">Cancelado</option>
-        </select>
+        {select && (
+          <select
+            value={selectedStatus}
+            onChange={onStatusChange}
+            className="bg-white text-blac font-semibold border focus:outline-none border-amber-300 rounded-md p-1 md:p-2"
+          >
+            <option value="" className="">Todos</option>
+            <option value="Entregue">Entregue</option>
+            <option value="Pendente">Pendente</option>
+            <option value="Cancelado">Cancelado</option>
+          </select>
+        )}
       </div>
     </div>
   );
