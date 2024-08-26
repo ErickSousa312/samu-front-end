@@ -1,8 +1,5 @@
 import { Content, Header, SideBar } from '../../shared/components'
 import FormMarket from './formAccess'
-import OrderListFreeMarket from './orderListMercadoLivre'
-
-const access = true
 
 const FreeMarket = () => {
   return (
@@ -10,7 +7,7 @@ const FreeMarket = () => {
     <Header />
     <div className="flex flex-row flex-grow">
       <SideBar />
-      <Content title='Login mercado livre' content={access ? <FormMarket /> : <OrderListFreeMarket />} />
+      <Content title='Login mercado livre' content={<FormMarket />} />
     </div>
   </div>
   )
