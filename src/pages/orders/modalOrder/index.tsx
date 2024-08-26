@@ -21,7 +21,8 @@ const fields = [
     "Serviços Particular"
   ] },
   { key: 'phone', label: 'Telefone', type: 'text' },
-  { key: 'email', label: 'Email', type: 'text' },
+  { key: 'email', label: 'Email', type: 'email' },
+  { key: 'driver', label: 'motorista', type: 'email' },
   { key: 'deliveryDate', label: 'Data do Pedido', type: 'date' },
 ];
 
