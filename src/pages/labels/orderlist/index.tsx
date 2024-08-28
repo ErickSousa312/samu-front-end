@@ -94,6 +94,7 @@ const OrderLabels = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           selectedStatus={selectedStatus}
           onStatusChange={(e) => setSelectedStatus(e.target.value)}
+          select={false}
         />
       </div>
 
