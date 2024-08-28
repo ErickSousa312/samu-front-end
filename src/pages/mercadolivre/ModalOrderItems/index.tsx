@@ -23,14 +23,14 @@ const ModalOrderItems = ({ items, onClose }: ModalOrderItemsProps) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-90">
-      <div className="relative m-16 bg-white max-w-lg w-full">
-        <span className="absolute py-1 px-3 -left-8 -top-2 -rotate-[10deg] border border-black black_border bg-amber-600 text-white font-bold">
+      <div className="relative m-4 md:m-16 bg-white max-w-lg w-full">
+        <span className="absolute py-1 px-3 -left-4 md:-left-8 -top-4 md:-top-2 -rotate-[10deg] border border-black black_border bg-amber-600 text-white font-bold">
           Detalhes do pedido
         </span>
         <div className="purple_border p-8 border border-black">
           <h3 className="text-lg font-bold mb-4">Itens do Pedido</h3>
           {items.map((item: OrderItem, index: number) => (
-            <div key={index} className="mb-4 border border-gray-300 p-4 rounded">
+            <div key={index} className="mb-4  p-4 rounded">
               <h5 className="font-semibold">Item {index + 1}</h5>
               <div className="grid grid-cols-2 gap-4">
                 {orderItemFields.map(({ key, label, accessor }) => {
