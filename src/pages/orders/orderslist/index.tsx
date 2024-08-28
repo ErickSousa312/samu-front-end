@@ -24,15 +24,20 @@ const OrdersList = () => {
     const fetchOrders = async () => {
       try {
         const response = await api.get<Order[]>("/orders");
-        if (user && user.role === "customer") {
-          const userOrders = response.data.filter(order => order.email === user.email);
-          setOrders(userOrders);
+        console.log(response.data); // Verifique o que está sendo retornado aqui
+        if (Array.isArray(response.data)) {
+          if (user && user.role === "customer") {
+            const userOrders = response.data.filter(order => order.email === user.email);
+            setOrders(userOrders);
+          } else {
+            setOrders(response.data);
+          }
         } else {
-          setOrders(response.data);
+          console.error("A resposta da API não é um array");
         }
       } catch (err) {
         console.log(err);
-      } 
+      }
     };
   
     fetchOrders();

@@ -44,7 +44,7 @@ const OrderLabels = () => {
   }, [user]);
 
   if (loading) return <div className="text-white flex gap-2">Carregando...<div className="mr-2 animate-spin border-4 border-t-transparent border-white rounded-full w-5 h-5"></div></div>;
-  if (error) return <p>{error}</p>;
+  if (error) return <p className="text-white flex gap-2">{error}</p>;
 
   const filteredOrders = orders.filter(order => {
     const matchesSearchTerm = order.userName.toLowerCase().includes(searchTerm.toLowerCase()) || order.email.toLowerCase().includes(searchTerm.toLowerCase());
