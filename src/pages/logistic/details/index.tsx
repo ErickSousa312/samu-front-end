@@ -60,13 +60,12 @@ const DetailsLogistic = () => {
   return (
     <div className="w-full h-full">
       <div className="flex flex-col py-12">
-        <div className="flex md:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
           <Card count={customerCount} description="Quantidade de clientes cadastrados" text="Clientes" link="/registerclient"/>
           <Card count={driverCount} description="Quantidade de motoristas cadastrados" text="Motoristas" link="/registerdriver"/>
           <Card value={deliveredOrdersPrice} description="Faturamento dos pedidos entregues" text="Pedidos Entregues" link="/orders" />      
-
         </div>
-        <div className="flex flex-col md:flex-row gap-4 py-12 justify-center items-center">
+        <div className="flex flex-col md:flex-row py-0 md:py-12 justify-center items-center">
           <SalesChart          
           entregueCount={entregueCount} 
           pendenteCount={pendenteCount} 
