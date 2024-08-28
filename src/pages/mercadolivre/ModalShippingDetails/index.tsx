@@ -68,18 +68,18 @@ const ModalShippingDetails = ({ onClose, shippingDetails }: ModalShippingDetails
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-4xl">
+      <div className="bg-white mx-2 md:mx-0 p-6 rounded-lg shadow-lg w-full md:w-3/4 max-w-xl flex flex-col justify-center items-center">
         <h2 className="text-xl font-bold mb-4">Detalhes do Envio</h2>
-        <form className="space-y-4 grid grid-cols-3">
+        <form className=" grid grid-cols-2 gap-4">
           {orderShippingFields.map(({ key, label }) => (
-            <div key={key} className="mb-4">
+            <div key={key} >
               <label><strong>{label}:</strong></label>
               <input
                 type="text"
                 value={getValue(key)}
                 onChange={(e) => handleChange(key, e.target.value)}
                 readOnly={true}
-                className="input-field-client"
+                className="input-field-client break-words"
               />
             </div>
           ))}
