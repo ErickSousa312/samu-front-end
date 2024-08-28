@@ -11,8 +11,6 @@ interface PrivateRouteProps {
 const PrivateRoute = ({ element, path }: PrivateRouteProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  console.log("user DATA verify", user)
-  console.log("entrou aqui")
   if (!user) {
     navigate('/');
   }
