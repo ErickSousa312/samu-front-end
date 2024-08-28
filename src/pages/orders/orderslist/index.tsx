@@ -10,8 +10,6 @@ import InputSearch from "../../../shared/components/inputs/InputSearch";
 
 const OrdersList = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersPerPage] = useState(6);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -21,9 +19,6 @@ const OrdersList = () => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const { addToast } = useToast();
   const { user } = useAuth();
-
-  console.log(loading);
-  console.log(error);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -36,11 +31,8 @@ const OrdersList = () => {
           setOrders(response.data);
         }
       } catch (err) {
-        setError("Erro ao carregar os pedidos");
         console.log(err);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
   
     fetchOrders();

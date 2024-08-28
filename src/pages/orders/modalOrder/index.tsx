@@ -48,7 +48,6 @@ const ModalOrder = ({ order, isClient = false, readOnly = false, onClose, onEdit
   const handleChange = (key: keyof Order, value: any) => {
     if (editedOrder) {
       if (key === 'deliveryDate') {
-        // Para campos de data, manter o valor como string no formato 'YYYY-MM-DD'
         setEditedOrder({ ...editedOrder, [key]: value } as Order);
       } else {
         setEditedOrder({ ...editedOrder, [key]: value } as Order);
@@ -59,15 +58,15 @@ const ModalOrder = ({ order, isClient = false, readOnly = false, onClose, onEdit
   const formatDate = (dateString: string | undefined) => {
     if (dateString) {
       const date = new Date(dateString);
-      return isNaN(date.getTime()) ? "" : date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+      return isNaN(date.getTime()) ? "" : date.toISOString().split('T')[0];
     }
     return "";
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div className="relative m-16 bg-white max-w-lg w-full">
-        <span className="absolute py-1 px-3 -left-8 -top-2 -rotate-[10deg] border border-black black_border bg-amber-600 text-white font-bold">
+      <div className="relative m-6 md:m-16 bg-white max-w-lg w-full">
+        <span className="absolute py-1 px-3 -left-4 md:-left-8 -top-2 -rotate-[10deg] border border-black black_border bg-amber-600 text-white font-bold">
           Seu Pedido!
         </span>
         <div className="purple_border p-8 border border-black">

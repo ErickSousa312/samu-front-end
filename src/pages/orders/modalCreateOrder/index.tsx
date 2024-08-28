@@ -105,7 +105,6 @@ const CreateOrder = ({ onClose }: CreateOrderProps) => {
         }
   
         const formData = { ...data, userId: selectedUser.id, driverId: selectedDriver?.id };
-        console.log("Dados enviados:", formData);
   
         addToast({ type: 'loading', message: 'Aguarde, estamos processando seu pedido...' });
   
@@ -121,22 +120,22 @@ const CreateOrder = ({ onClose }: CreateOrderProps) => {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70">
         <div className="relative py-3 sm:mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-amber-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-          <div className="relative px-4 py-10 bg-[#141414] w-[50vw] shadow-lg sm:rounded-3xl sm:p-20">
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-300 to-amber-600 shadow-lg transform -skew-y-6 md:skew-y-0 -rotate-6 md:-rotate-3 rounded-3xl"></div>
+          <div className="relative px-4 py-10 bg-[#141414] w-[90vw] md:w-[50vw] shadow-lg sm:rounded-3xl p-20">
             <div className="max-w-md mx-auto flex flex-col justify-center items-center">
               <div>
                 <h1 className="text-2xl font-bold text-white">Criar Pedido</h1>
               </div>
               <div className="mt-4 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center w-[50vw]">
-                  <div className="grid grid-cols-2 gap-4 items-center m-auto justify-center text-base ">
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center w-[90vw] md:w-[50vw]">
+                  <div className="grid grid-cols-2 gap-4 items-center m-auto justify-center text-sm md:text-base ">
                     {Object.entries(inputFields).map(([name, field]) => (
                       <div key={name} className="">
                         {field.type === "select" ? (
                           <div>
                             <select
                               {...register(name as keyof OrderFormData)}
-                              className={`mt-1 bg-transparent text-white p-2 border rounded  w-[16vw] ${errors[name as keyof OrderFormData] ? 'border-red-500' : ''}`}
+                              className={`mt-1 bg-transparent text-white p-2 border rounded w-[40vw] md:w-[16vw] ${errors[name as keyof OrderFormData] ? 'border-red-500' : ''}`}
                             >
                               <option value="" disabled>
                                 {field.placeholder}
@@ -186,7 +185,7 @@ const CreateOrder = ({ onClose }: CreateOrderProps) => {
                                 name === "price" ? { valueAsNumber: true } : {}
                               )}
                               onChange={name === "deliveryDate" ? handleChangeDate : undefined}
-                              className={`mt-1 w-[10vw] md:w-[16vw] bg-transparent text-white p-2 border rounded ${errors[name as keyof OrderFormData] ? 'border-red-500' : ''}`}
+                              className={`mt-1 w-[40vw] md:w-[16vw] bg-transparent text-white p-2 border rounded ${errors[name as keyof OrderFormData] ? 'border-red-500' : ''}`}
                             />
                             {errors[name as keyof OrderFormData] && (
                               <p className="text-red-500 text-sm mt-1">{errors[name as keyof OrderFormData]?.message}</p>
