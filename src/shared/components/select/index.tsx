@@ -57,7 +57,7 @@ const Dropdown = ({
       <button
         onClick={toggleDropdown}
         disabled={loading || disabled}
-        className='mt-1 bg-transparent flex items-center justify-center text-white p-2 border rounded w-[16vw] h-[44px]'
+        className='mt-1 bg-transparent flex items-center justify-center text-white p-2 border rounded w-[40vw] md:w-[16vw] h-[44px]'
       >
         {loading ? 'Loading...' : (selectedItem ? selectedItem.email : name)}
         <IoIosArrowDown  size={16}/>

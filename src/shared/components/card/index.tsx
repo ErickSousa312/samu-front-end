@@ -11,7 +11,7 @@ interface CardProps {
 const Card = ({ link, text,  count, value, description }: CardProps) => {
   return (
         <div 
-            className="group relative cursor-pointer overflow-hidden bg-white px-6 pt-4 pb-4 shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 hover:-translate-y-1 rounded-lg hover:shadow-2xl max-w-2xl sm:rounded-lg sm:px-6">
+            className="group relative cursor-pointer overflow-hidden bg-white px-6 pt-4 pb-4 shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 w-[300px] md:w-full hover:-translate-y-1 rounded-lg hover:shadow-2xl ">
             <span className="absolute top-4 z-0 h-12 w-12 rounded-full bg-amber-500 transition-all duration-300 group-hover:scale-[15]"></span>
             <div className="relative z-10 mx-auto max-w-md">      
                     <span className="grid h-12 w-12 place-items-center rounded-full bg-amber-500 transition-all duration-300 group-hover:bg-amber-400">
