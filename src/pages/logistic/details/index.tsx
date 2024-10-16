@@ -32,13 +32,15 @@ const DetailsLogistic = () => {
    
     const fetchOrdersData = async () => {
       try {
-        const ordersResponse = await api.get('/orders');
+        const now = new Date;
+        const ordersResponse = await api.get(`/ocorrencia?ano=${now.getFullYear()}`);
+        console.log(ordersResponse.data.length)
         const orders = ordersResponse.data;
 
         // Calculate the price for delivered orders
         const deliveredOrders = orders.filter((order: { status: string }) => order.status === "Entregue");
         const totalPrice = deliveredOrders.reduce((acc: number, order: { price: number }) => acc + order.price, 0);
-        setDeliveredOrdersPrice(totalPrice);
+        setDeliveredOrdersPrice(ordersResponse.data.length);
 
         // Count orders by status
         const entregueCount = orders.filter((order: { status: string }) => order.status === "Entregue").length;
@@ -58,12 +60,12 @@ const DetailsLogistic = () => {
   }, []);
 
   return (
-    <div className="w-full h-full">
-      <div className="flex flex-col py-12">
+    <div className="w-full h-full ">
+      <div className="flex flex-col py-12 ">
         <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
           <Card count={customerCount} description="Quantidade de clientes cadastrados" text="Clientes" link="/registerclient"/>
           <Card count={driverCount} description="Quantidade de motoristas cadastrados" text="Motoristas" link="/registerdriver"/>
-          <Card value={deliveredOrdersPrice} description="Faturamento dos pedidos entregues" text="Pedidos Entregues" link="/orders" />      
+          <Card count={deliveredOrdersPrice} description="Quantidade de Ocorrencias no ano" text="Pedidos Entregues" link="/orders" />      
         </div>
         <div className="flex flex-col md:flex-row py-0 md:py-12 justify-center items-center">
           <SalesChart          

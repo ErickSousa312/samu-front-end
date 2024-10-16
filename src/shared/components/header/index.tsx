@@ -15,7 +15,7 @@ const Header = () => {
     <div className='h-16 z-40 fixed p-4 w-screen bg-[#121212] text-white flex items-center justify-end gap-8 px-12 border-[#88493877] border-b'>
 
       <div className="flex items-center gap-4">
-        <span>Olá, {user?.username || "Usuário"}</span>
+        <span>Olá, {user?.userName || "Usuário"}</span>
       </div>
       <button 
         onClick={handleLogout}

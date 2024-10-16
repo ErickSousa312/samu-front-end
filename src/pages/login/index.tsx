@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../shared/context/ToastContext';
 
 interface LoginFormInputs {
-  email: string;
+  userName: string;
   password: string;
 }
 
@@ -20,8 +20,9 @@ const LoginPage = () => {
     addToast({ type: 'loading', message: 'Aguarde, estamos processando seu login...' });
 
     try {
-      const response = await api.post(`/signIn`, data);
-      await login(response.data.token, data.email);
+      const response = await api.post(`/auth/login`, data);
+      console.log(response)
+      await login(response.data.access_token, data.userName);
       if (response.status === 200) {
         addToast({ type: 'success', message: 'Login realizado com sucesso!' });
         navigate('/orders');
@@ -42,7 +43,7 @@ const LoginPage = () => {
             <div className="h-2 bg-amber-400 rounded-t-md"></div>
             <form onSubmit={handleSubmit(onSubmit)} className="px-8 py-6 ">
               <div className='flex flex-col justify-center items-center gap-4'>
-                <input type="email" {...register('email')} placeholder="Email" className="w-full h-5 px-3 py-5 my-8  bg-transparent border-b hover:outline-none focus:outline-none" />
+                <input type="text" {...register('userName')} placeholder="UserName" className="w-full h-5 px-3 py-5 my-8  bg-transparent border-b hover:outline-none focus:outline-none" />
    
                 <input type="password" {...register('password')} placeholder="Senha" className="w-full h-5 mt6 px-3 py-5 bg-transparent border-b hover:outline-none focus:outline-none" />
 

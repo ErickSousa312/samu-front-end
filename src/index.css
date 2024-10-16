@@ -18,3 +18,24 @@
     @apply w-full p-2 border border-gray-300 rounded border-none focus:outline-none cursor-default
 }
 
+/* width */
+::-webkit-scrollbar {
+    width: 18px;
+    right: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #04b60400;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background-color: #d30808; /* Cor do botão de rolagem */
+    border-radius: 5px; /* Borda arredondada do botão de rolagem */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(187, 41, 41);
+}

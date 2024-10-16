@@ -20,7 +20,8 @@ const Card = ({ link, text,  count, value, description }: CardProps) => {
                         </svg>
                     </span>
                     <p className="absolute top-0 right-0 md:top-0 md:right-8 text-4xl font-bold ">{count}</p>
-                    {value && <p className="absolute top-0 right-0 md:top-0 md:right-8 text-4xl font-bold ">R${value}</p>}
+                    {value !== undefined && value !== null ? (
+                        <p className="absolute top-0 right-0 md:top-0 md:right-8 text-4xl font-bold">R${value}</p>) : null}
                 <div
                     className="space-y-6 pt-5 text-base leading-7 text-gray-600 transition-all duration-300 group-hover:text-white/90">
                     <p>{description}</p>

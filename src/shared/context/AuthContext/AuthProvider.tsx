@@ -2,10 +2,11 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { TypeUser } from '../../../@types/useData';
 
 
 interface AuthContextType {
-  user: { role: string, email: string, username: string, id: string } | null;
+  user: TypeUser | null;
   login: (token: string, email: string) => Promise<boolean | undefined>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -14,7 +15,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<{ role: string, email: string, username: string, id: string } | null>(null);
+  const [user, setUser] = useState<TypeUser| null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,12 +34,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try{
         const dataInsertLocalStorage = await new Promise(async (resolve) => {
           localStorage.setItem('token', token);
-            const response = await axios.get(`https://api.helpdesk-maraba.cloud/users/email/${email}`, {
+            const response = await axios.get(`http://localhost:3000/api/v1/users/name/${email}`, {
               headers: {
                 Authorization: `Bearer ${token}`
               }
             });
-            const userData = response.data;
+            const userData:TypeUser = response.data;
+            console.log(userData)
             setUser(userData);
             Cookies.set('user', JSON.stringify(userData), { expires: 7 });
             localStorage.setItem('role', userData.role);
@@ -58,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('role'); // Remove a role ao fazer logout
+    localStorage.removeItem('role');
     Cookies.remove('user');
     setUser(null);
     navigate('/');
