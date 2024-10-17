@@ -38,12 +38,13 @@ export default [{
     },
 
     rules: {
-        "prettier/prettier": ["error", {
-            trailingComma: "all",
-            parser: "flow",
-        }, {
-            usePrettierrc: true,
-        }],
+        // "prettier/prettier": ["error", {
+        //     // trailingComma: "all",
+        //     // parser: "flow",
+        //     // singleQuote: false,
+        // }, {
+        //     usePrettierrc: true,
+        // }],
 
         "@typescript-eslint/interface-name-prefix": "off",
         "@typescript-eslint/explicit-function-return-type": "off",

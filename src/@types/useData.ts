@@ -1,5 +1,5 @@
-export type TypeUser = { 
-    _id: string;
-    userName: string;
-    role: string
-}
+export type TypeUser = {
+  _id: string;
+  userName: string;
+  role: string;
+};

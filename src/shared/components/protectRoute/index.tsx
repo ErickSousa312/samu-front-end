@@ -1,5 +1,5 @@
-import { Navigate } from 'react-router-dom';
-import { ReactNode } from 'react';
+import { Navigate } from "react-router-dom";
+import { ReactNode } from "react";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -7,8 +7,8 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children, roles }: ProtectedRouteProps) => {
-  const storedRole = localStorage.getItem('role');
-  
+  const storedRole = localStorage.getItem("role");
+
   if (!storedRole || !roles.includes(storedRole)) {
     return <Navigate to="/" />;
   }

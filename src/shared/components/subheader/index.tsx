@@ -1,15 +1,13 @@
-
 interface SubHeaderProps {
-    title: string
+  title: string;
 }
 
 const SubHeader = ({ title }: SubHeaderProps) => {
   return (
     <div className="pt-2 bg-[#161617] justify-center items-center w-screen  ">
-        <h1>{title}</h1>
-      
+      <h1>{title}</h1>
     </div>
-  )
-}
+  );
+};
 
-export default SubHeader
+export default SubHeader;

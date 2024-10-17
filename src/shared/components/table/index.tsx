@@ -88,13 +88,22 @@ const Table = ({ role }: TableProps) => {
     if (selectedUser) {
       const roleLabel = getRoleLabel(selectedUser.role);
       try {
-        addToast({ type: "loading", message: `Aguarde enquanto o ${roleLabel} é deletado..` });
+        addToast({
+          type: "loading",
+          message: `Aguarde enquanto o ${roleLabel} é deletado..`,
+        });
         await api.delete(`/users/${selectedUser._id}`);
         setUsers(users.filter((user) => user._id !== selectedUser._id));
-        addToast({ type: "success", message: `${roleLabel.charAt(0).toUpperCase() + roleLabel.slice(1)} deletado com sucesso!` });
+        addToast({
+          type: "success",
+          message: `${roleLabel.charAt(0).toUpperCase() + roleLabel.slice(1)} deletado com sucesso!`,
+        });
         closeDeleteModal();
       } catch (error) {
-        addToast({ type: "error", message: `Ocorreu um problema ao deletar o ${roleLabel}.` });
+        addToast({
+          type: "error",
+          message: `Ocorreu um problema ao deletar o ${roleLabel}.`,
+        });
         console.error("Erro ao excluir usuário:", error);
       }
     }
@@ -104,20 +113,36 @@ const Table = ({ role }: TableProps) => {
     if (selectedUser) {
       const roleLabel = getRoleLabel(selectedUser.role);
       try {
-        addToast({ type: "loading", message: `Aguarde enquanto o ${roleLabel} é editado..` });
+        addToast({
+          type: "loading",
+          message: `Aguarde enquanto o ${roleLabel} é editado..`,
+        });
 
         const updateUser = {
           ...selectedUser,
-          username: (document.getElementById("edit-username") as HTMLInputElement).value,
-          email: (document.getElementById("edit-email") as HTMLInputElement).value,
+          username: (
+            document.getElementById("edit-username") as HTMLInputElement
+          ).value,
+          email: (document.getElementById("edit-email") as HTMLInputElement)
+            .value,
         };
 
         await api.patch(`/users/${updateUser._id}`, updateUser);
-        setUsers(users.map((user) => (user._id === updateUser._id ? updateUser : user)));
-        addToast({ type: "success", message: `${roleLabel.charAt(0).toUpperCase() + roleLabel.slice(1)} editado com sucesso!` });
+        setUsers(
+          users.map((user) =>
+            user._id === updateUser._id ? updateUser : user,
+          ),
+        );
+        addToast({
+          type: "success",
+          message: `${roleLabel.charAt(0).toUpperCase() + roleLabel.slice(1)} editado com sucesso!`,
+        });
         closeEditModal();
       } catch (err) {
-        addToast({ type: "error", message: `Ocorreu um problema ao editar o ${roleLabel}.` });
+        addToast({
+          type: "error",
+          message: `Ocorreu um problema ao editar o ${roleLabel}.`,
+        });
         console.error("Erro ao atualizar o cliente", err);
       }
     }
@@ -170,11 +195,9 @@ const Table = ({ role }: TableProps) => {
           ))}
           {currentItems.length === 0 && (
             <tr className="border-b bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-600">
-              <td
-                colSpan={3}
-                className="px-6 py-4 text-center text-slate-500"
-              >
-                Nenhum {role === "customer" ? "cliente" : "motorista"} encontrado
+              <td colSpan={3} className="px-6 py-4 text-center text-slate-500">
+                Nenhum {role === "customer" ? "cliente" : "motorista"}{" "}
+                encontrado
               </td>
             </tr>
           )}

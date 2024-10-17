@@ -1,9 +1,9 @@
 // src/authContext.ts
-import { createContext } from 'react';
+import { createContext } from "react";
 
 interface User {
   id: string;
-  role: 'admin' | 'driver' | 'user';
+  role: "admin" | "driver" | "user";
   name: string;
   email: string;
 }

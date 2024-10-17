@@ -54,14 +54,21 @@ const OrderListFreeMarket = () => {
   };
 
   const filteredOrders = orders.filter((order) => {
-    const matchesSearchTerm = order.buyer?.nickname.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = selectedStatus ? order.buyer?.nickname.includes(selectedStatus) : true;
+    const matchesSearchTerm = order.buyer?.nickname
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesStatus = selectedStatus
+      ? order.buyer?.nickname.includes(selectedStatus)
+      : true;
     return matchesSearchTerm && matchesStatus;
   });
 
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const currentOrders = filteredOrders.slice(
+    indexOfFirstOrder,
+    indexOfLastOrder,
+  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -112,7 +119,9 @@ const OrderListFreeMarket = () => {
               className="bg-[#3d3d3d] p-4 rounded flex-col flex md:flex-row items-center justify-between text-white shadow-md w-full cursor-pointer hover:-translate-y-1 hover:opacity-70 duration-200"
             >
               <div className="flex flex-col">
-                <h3 className="text-sm md:text-lg font-bold">Pedido #{order.id}</h3>
+                <h3 className="text-sm md:text-lg font-bold">
+                  Pedido #{order.id}
+                </h3>
                 <p className="text-sm md:text-lg">
                   <strong>Preço Pago:</strong> {order.paid_amount}
                 </p>
@@ -138,7 +147,6 @@ const OrderListFreeMarket = () => {
                   }}
                 />
               </div>
-
             </div>
           ))
         ) : (
@@ -167,16 +175,15 @@ const OrderListFreeMarket = () => {
       </div>
 
       {isModalOpen && selectedOrder && (
-        <ModalOrderML
-          order={selectedOrder}
-          onClose={handleCloseModal}
-        />
+        <ModalOrderML order={selectedOrder} onClose={handleCloseModal} />
       )}
 
-    {showModalQrCode && selectedQrCode && (
+      {showModalQrCode && selectedQrCode && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg flex flex-col justify-center items-center">
-            <h2 className="text-lg font-bold mb-4">QR Code do Pedido #{selectedQrCode.id}</h2>
+            <h2 className="text-lg font-bold mb-4">
+              QR Code do Pedido #{selectedQrCode.id}
+            </h2>
             <QRCode
               size={340}
               className="my-4"

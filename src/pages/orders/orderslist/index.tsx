@@ -27,7 +27,9 @@ const OrdersList = () => {
         console.log(response.data); // Verifique o que está sendo retornado aqui
         if (Array.isArray(response.data)) {
           if (user && user.role === "customer") {
-            const userOrders = response.data.filter(order => order.email === user.email);
+            const userOrders = response.data.filter(
+              (order) => order.email === user.email,
+            );
             setOrders(userOrders);
           } else {
             setOrders(response.data);
@@ -39,7 +41,7 @@ const OrdersList = () => {
         console.log(err);
       }
     };
-  
+
     fetchOrders();
   }, [user]);
 
@@ -56,15 +58,22 @@ const OrdersList = () => {
     }
   };
 
-  const filteredOrders = orders.filter(order => {
-    const matchesSearchTerm = order.userName.toLowerCase().includes(searchTerm.toLowerCase()) || order.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = selectedStatus ? order.status === selectedStatus : true;
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearchTerm =
+      order.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = selectedStatus
+      ? order.status === selectedStatus
+      : true;
     return matchesSearchTerm && matchesStatus;
   });
 
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfFirstOrder + ordersPerPage);
+  const currentOrders = filteredOrders.slice(
+    indexOfFirstOrder,
+    indexOfFirstOrder + ordersPerPage,
+  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -90,13 +99,23 @@ const OrdersList = () => {
 
   const handleEdit = async (updatedOrder: Order) => {
     try {
-      addToast({ type: "loading", message: "Aguarde enquanto o pedido é editado.." });
+      addToast({
+        type: "loading",
+        message: "Aguarde enquanto o pedido é editado..",
+      });
       await api.patch(`/orders/${updatedOrder._id}`, updatedOrder);
-      setOrders(orders.map(order => order._id === updatedOrder._id ? updatedOrder : order));
+      setOrders(
+        orders.map((order) =>
+          order._id === updatedOrder._id ? updatedOrder : order,
+        ),
+      );
       addToast({ type: "success", message: "Pedido editado com sucesso!" });
       closeModal();
     } catch (err) {
-      addToast({ type: "error", message: "Ocorreu um problema ao editar seu pedido." });
+      addToast({
+        type: "error",
+        message: "Ocorreu um problema ao editar seu pedido.",
+      });
       console.error("Erro ao atualizar o pedido", err);
     }
   };
@@ -104,13 +123,19 @@ const OrdersList = () => {
   const handleDelete = async () => {
     if (selectedOrder) {
       try {
-        addToast({ type: "loading", message: "Aguarde enquanto o pedido é deletado.." });
+        addToast({
+          type: "loading",
+          message: "Aguarde enquanto o pedido é deletado..",
+        });
         await api.delete(`/orders/${selectedOrder._id}`);
-        setOrders(orders.filter(order => order._id !== selectedOrder._id));
+        setOrders(orders.filter((order) => order._id !== selectedOrder._id));
         addToast({ type: "success", message: "Pedido deletado com sucesso!" });
         closeModal();
       } catch (err) {
-        addToast({ type: "error", message: "Ocorreu um problema ao deletar seu pedido." });
+        addToast({
+          type: "error",
+          message: "Ocorreu um problema ao deletar seu pedido.",
+        });
         console.error("Erro ao deletar o pedido", err);
       }
     }
@@ -133,7 +158,7 @@ const OrdersList = () => {
         </button>
       ) : null}
 
-    <div className="my-8">
+      <div className="my-8">
         <InputSearch
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -142,24 +167,28 @@ const OrdersList = () => {
         />
       </div>
 
-
       <div className="flex flex-wrap justify-center items-center gap-4 p-4 w-full">
-      {currentOrders.map((order) => (
+        {currentOrders.map((order) => (
           <div
             key={order._id}
             className="bg-[#3d3d3d] p-4 rounded flex-col flex md:flex-row items-center justify-between text-white shadow-md w-full cursor-pointer hover:-translate-y-1 hover:opacity-70 duration-200"
             onClick={() => openModal(order)}
           >
             <div className="flex flex-col">
-              <h3 className="text-sm md:text-lg font-bold">Pedido #{order._id}</h3>
-              <p className="text-sm md:text-lg"><strong>Endereço:</strong> {order.address}</p>
+              <h3 className="text-sm md:text-lg font-bold">
+                Pedido #{order._id}
+              </h3>
+              <p className="text-sm md:text-lg">
+                <strong>Endereço:</strong> {order.address}
+              </p>
             </div>
-            <p className={`${getStatusColorClass(order.status)} text-sm md:text-base  flex justify-center w-full md:w-24 items-center m-2 rounded-full h-10 md:h-12`}>
+            <p
+              className={`${getStatusColorClass(order.status)} text-sm md:text-base  flex justify-center w-full md:w-24 items-center m-2 rounded-full h-10 md:h-12`}
+            >
               {order.status}
             </p>
           </div>
         ))}
-
       </div>
 
       <div className="flex justify-between w-full items-center mt-4">
@@ -170,7 +199,9 @@ const OrdersList = () => {
         >
           Anterior
         </button>
-        <span className="text-white">Página {currentPage} de {totalPages}</span>
+        <span className="text-white">
+          Página {currentPage} de {totalPages}
+        </span>
         <button
           onClick={() => paginate(currentPage + 1)}
           disabled={currentPage === totalPages}
@@ -180,9 +211,7 @@ const OrdersList = () => {
         </button>
       </div>
 
-      {showCreateOrder && (
-        <CreateOrder onClose={closeModalCreateOrder} />
-      )}
+      {showCreateOrder && <CreateOrder onClose={closeModalCreateOrder} />}
 
       {showModal && selectedOrder && (
         <ModalOrder

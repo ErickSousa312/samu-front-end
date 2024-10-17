@@ -1,6 +1,6 @@
-import React from 'react';
-import { Route, useNavigate } from 'react-router-dom';
-import { useAuth } from '../shared/context/AuthContext/AuthProvider';
+import React from "react";
+import { Route, useNavigate } from "react-router-dom";
+import { useAuth } from "../shared/context/AuthContext/AuthProvider";
 
 interface PrivateRouteProps {
   roles: string[];
@@ -12,7 +12,7 @@ const PrivateRoute = ({ element, path }: PrivateRouteProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   if (!user) {
-    navigate('/');
+    navigate("/");
   }
 
   // if (!user.role(roles)) {

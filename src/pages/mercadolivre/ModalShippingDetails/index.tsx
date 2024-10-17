@@ -2,18 +2,21 @@ import { useState } from "react";
 import { ShippingDetails } from "../../../@types";
 
 const orderShippingFields = [
-  { key: 'tracking_number', label: 'Número de Rastreamento' },
-  { key: 'date_created', label: 'Data de Criação' },
-  { key: 'origin.shipping_address.address_line', label: 'Endereço de Origem' },
-  { key: 'destination.shipping_address.address_line', label: 'Endereço de Destino' },
-  { key: 'declared_value', label: 'Valor Declarado' },
-  { key: 'status', label: 'Status' },
-  { key: 'destination.receiver_name', label: 'Nome do recebedor' },
-  { key: 'destination.receiver_phone', label: 'Número do recebedor' },
-  { key: 'destination.shipping_address.street_name', label: 'Rua' },
-  { key: 'destination.shipping_address.city.name', label: 'Cidade' },
-  { key: 'destination.shipping_address.neighborhood.name', label: 'Bairro' },
-  { key: 'destination.shipping_address.state.name', label: 'Estado' },
+  { key: "tracking_number", label: "Número de Rastreamento" },
+  { key: "date_created", label: "Data de Criação" },
+  { key: "origin.shipping_address.address_line", label: "Endereço de Origem" },
+  {
+    key: "destination.shipping_address.address_line",
+    label: "Endereço de Destino",
+  },
+  { key: "declared_value", label: "Valor Declarado" },
+  { key: "status", label: "Status" },
+  { key: "destination.receiver_name", label: "Nome do recebedor" },
+  { key: "destination.receiver_phone", label: "Número do recebedor" },
+  { key: "destination.shipping_address.street_name", label: "Rua" },
+  { key: "destination.shipping_address.city.name", label: "Cidade" },
+  { key: "destination.shipping_address.neighborhood.name", label: "Bairro" },
+  { key: "destination.shipping_address.state.name", label: "Estado" },
 ];
 
 interface ModalShippingDetailsProps {
@@ -25,45 +28,59 @@ type NestedObject = {
   [key: string]: any;
 };
 
-const setNestedValue = (obj: NestedObject, path: string[], value: any): void => {
+const setNestedValue = (
+  obj: NestedObject,
+  path: string[],
+  value: any,
+): void => {
   const lastKey = path.pop();
-  const lastObj = path.reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : {}), obj);
+  const lastObj = path.reduce(
+    (acc, key) => (acc && acc[key] !== undefined ? acc[key] : {}),
+    obj,
+  );
   if (lastObj && lastKey) lastObj[lastKey] = value;
 };
 
 const getNestedValue = (obj: NestedObject, path: string[]): any => {
-  return path.reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
+  return path.reduce(
+    (acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined),
+    obj,
+  );
 };
 
 const formatDate = (dateString: string): string => {
   const options: Intl.DateTimeFormatOptions = {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
     hour12: false,
   };
-  return new Date(dateString).toLocaleString('pt-BR', options).replace(',', '');
+  return new Date(dateString).toLocaleString("pt-BR", options).replace(",", "");
 };
 
-const ModalShippingDetails = ({ onClose, shippingDetails }: ModalShippingDetailsProps) => {
-  const [editedOrder, setEditedOrder] = useState<ShippingDetails>(shippingDetails);
+const ModalShippingDetails = ({
+  onClose,
+  shippingDetails,
+}: ModalShippingDetailsProps) => {
+  const [editedOrder, setEditedOrder] =
+    useState<ShippingDetails>(shippingDetails);
 
   const handleChange = (key: string, value: string | number) => {
-    const keys = key.split('.'); 
+    const keys = key.split(".");
     setNestedValue(editedOrder, keys, value);
     setEditedOrder({ ...editedOrder });
   };
 
   const getValue = (key: string): string | number | undefined => {
-    const keys = key.split('.'); 
+    const keys = key.split(".");
     const value = getNestedValue(editedOrder, keys);
-    if (typeof value === 'string' && key.includes('date')) {
+    if (typeof value === "string" && key.includes("date")) {
       return formatDate(value);
     }
-    return typeof value === 'string' || typeof value === 'number' ? value : '';
+    return typeof value === "string" || typeof value === "number" ? value : "";
   };
 
   return (
@@ -72,8 +89,10 @@ const ModalShippingDetails = ({ onClose, shippingDetails }: ModalShippingDetails
         <h2 className="text-xl font-bold mb-4">Detalhes do Envio</h2>
         <form className=" grid grid-cols-2 gap-4">
           {orderShippingFields.map(({ key, label }) => (
-            <div key={key} >
-              <label><strong>{label}:</strong></label>
+            <div key={key}>
+              <label>
+                <strong>{label}:</strong>
+              </label>
               <input
                 type="text"
                 value={getValue(key)}
@@ -83,16 +102,15 @@ const ModalShippingDetails = ({ onClose, shippingDetails }: ModalShippingDetails
               />
             </div>
           ))}
-
         </form>
         <div className="flex justify-center items-center w-full my-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded-md"
-            >
-              Fechar
-            </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="bg-gray-500 text-white px-4 py-2 rounded-md"
+          >
+            Fechar
+          </button>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "../../../shared/components/card";
 import Table from "../../../shared/components/table";
 import api from "../../../shared/services/api";
@@ -12,15 +12,18 @@ const DetailsLogistic = () => {
   const [pendenteCount, setPendenteCount] = useState(0);
   const [canceladoCount, setCanceladoCount] = useState(0);
 
-
   useEffect(() => {
     const fetchUserCounts = async () => {
       try {
-        const response = await api.get('/users');
+        const response = await api.get("/users");
         const users = response.data;
 
-        const customers = users.filter((user: { role: string }) => user.role === "customer");
-        const drivers = users.filter((user: { role: string }) => user.role === "driver");
+        const customers = users.filter(
+          (user: { role: string }) => user.role === "customer",
+        );
+        const drivers = users.filter(
+          (user: { role: string }) => user.role === "driver",
+        );
 
         setCustomerCount(customers.length);
         setDriverCount(drivers.length);
@@ -29,23 +32,35 @@ const DetailsLogistic = () => {
       }
     };
 
-   
     const fetchOrdersData = async () => {
       try {
-        const now = new Date;
-        const ordersResponse = await api.get(`/ocorrencia?ano=${now.getFullYear()}`);
-        console.log(ordersResponse.data.length)
+        const now = new Date();
+        const ordersResponse = await api.get(
+          `/ocorrencia?ano=${now.getFullYear()}`,
+        );
+        console.log(ordersResponse.data.length);
         const orders = ordersResponse.data;
 
         // Calculate the price for delivered orders
-        const deliveredOrders = orders.filter((order: { status: string }) => order.status === "Entregue");
-        const totalPrice = deliveredOrders.reduce((acc: number, order: { price: number }) => acc + order.price, 0);
+        const deliveredOrders = orders.filter(
+          (order: { status: string }) => order.status === "Entregue",
+        );
+        const totalPrice = deliveredOrders.reduce(
+          (acc: number, order: { price: number }) => acc + order.price,
+          0,
+        );
         setDeliveredOrdersPrice(ordersResponse.data.length);
 
         // Count orders by status
-        const entregueCount = orders.filter((order: { status: string }) => order.status === "Entregue").length;
-        const pendenteCount = orders.filter((order: { status: string }) => order.status === "Pendente").length;
-        const canceladoCount = orders.filter((order: { status: string }) => order.status === "Cancelado").length;
+        const entregueCount = orders.filter(
+          (order: { status: string }) => order.status === "Entregue",
+        ).length;
+        const pendenteCount = orders.filter(
+          (order: { status: string }) => order.status === "Pendente",
+        ).length;
+        const canceladoCount = orders.filter(
+          (order: { status: string }) => order.status === "Cancelado",
+        ).length;
 
         setEntregueCount(entregueCount);
         setPendenteCount(pendenteCount);
@@ -63,23 +78,36 @@ const DetailsLogistic = () => {
     <div className="w-full h-full ">
       <div className="flex flex-col py-12 ">
         <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
-          <Card count={customerCount} description="Quantidade de clientes cadastrados" text="Clientes" link="/registerclient"/>
-          <Card count={driverCount} description="Quantidade de motoristas cadastrados" text="Motoristas" link="/registerdriver"/>
-          <Card count={deliveredOrdersPrice} description="Quantidade de Ocorrencias no ano" text="Pedidos Entregues" link="/orders" />      
+          <Card
+            count={customerCount}
+            description="Quantidade de clientes cadastrados"
+            text="Clientes"
+            link="/registerclient"
+          />
+          <Card
+            count={driverCount}
+            description="Quantidade de motoristas cadastrados"
+            text="Motoristas"
+            link="/registerdriver"
+          />
+          <Card
+            count={deliveredOrdersPrice}
+            description="Quantidade de Ocorrencias no ano"
+            text="Pedidos Entregues"
+            link="/orders"
+          />
         </div>
         <div className="flex flex-col md:flex-row py-0 md:py-12 justify-center items-center">
-          <SalesChart          
-          entregueCount={entregueCount} 
-          pendenteCount={pendenteCount} 
-          canceladoCount={canceladoCount} 
-        />
+          <SalesChart
+            entregueCount={entregueCount}
+            pendenteCount={pendenteCount}
+            canceladoCount={canceladoCount}
+          />
         </div>
-
       </div>
-      <Table role="customer"/>
+      <Table role="customer" />
     </div>
   );
 };
 
 export default DetailsLogistic;
-

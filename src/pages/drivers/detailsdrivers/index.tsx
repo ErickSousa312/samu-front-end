@@ -1,12 +1,11 @@
-
-import Table from '../../../shared/components/table'
+import Table from "../../../shared/components/table";
 
 const DetailsDrivers = () => {
   return (
-    <div className='bg-[#161617] pt-12 w-full'>
-      <Table role='driver' />
+    <div className="bg-[#161617] pt-12 w-full">
+      <Table role="driver" />
     </div>
-  )
-}
+  );
+};
 
-export default DetailsDrivers
+export default DetailsDrivers;

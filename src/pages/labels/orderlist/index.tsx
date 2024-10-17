@@ -24,10 +24,14 @@ const OrderLabels = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await api.get<Order[]>('/orders');
-        const deliveredOrders = response.data.filter(order => order.status === "Entregue");
+        const response = await api.get<Order[]>("/orders");
+        const deliveredOrders = response.data.filter(
+          (order) => order.status === "Entregue",
+        );
         if (user && user.role === "customer") {
-          const userOrders = deliveredOrders.filter(order => order.email === user.email);
+          const userOrders = deliveredOrders.filter(
+            (order) => order.email === user.email,
+          );
           setOrders(userOrders);
         } else {
           setOrders(deliveredOrders);
@@ -43,19 +47,31 @@ const OrderLabels = () => {
     fetchOrders();
   }, [user]);
 
-  if (loading) return <div className="text-white flex gap-2">Carregando...<div className="mr-2 animate-spin border-4 border-t-transparent border-white rounded-full w-5 h-5"></div></div>;
+  if (loading)
+    return (
+      <div className="text-white flex gap-2">
+        Carregando...
+        <div className="mr-2 animate-spin border-4 border-t-transparent border-white rounded-full w-5 h-5"></div>
+      </div>
+    );
   if (error) return <p className="text-white flex gap-2">{error}</p>;
 
-  const filteredOrders = orders.filter(order => {
-    const matchesSearchTerm = order.userName.toLowerCase().includes(searchTerm.toLowerCase()) || order.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = selectedStatus ? order.status === selectedStatus : true;
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearchTerm =
+      order.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = selectedStatus
+      ? order.status === selectedStatus
+      : true;
     return matchesSearchTerm && matchesStatus;
   });
 
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfFirstOrder + ordersPerPage);
-
+  const currentOrders = filteredOrders.slice(
+    indexOfFirstOrder,
+    indexOfFirstOrder + ordersPerPage,
+  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -87,7 +103,6 @@ const OrderLabels = () => {
 
   return (
     <div className="p-0 md:p-8 w-full">
-
       <div className="my-8">
         <InputSearch
           value={searchTerm}
@@ -106,8 +121,12 @@ const OrderLabels = () => {
             onClick={() => openModal(order)}
           >
             <div className="flex flex-col">
-              <h3 className="text-sm md:text-lg font-bold">Pedido #{order._id}</h3>
-              <p className="text-sm md:text-lg"><strong>Endereço:</strong> {order.address}</p>
+              <h3 className="text-sm md:text-lg font-bold">
+                Pedido #{order._id}
+              </h3>
+              <p className="text-sm md:text-lg">
+                <strong>Endereço:</strong> {order.address}
+              </p>
             </div>
             <div className="flex items-center w-full md:w-44">
               <p className="bg-green-500 text-sm md:text-base  flex justify-center w-full md:w-24 items-center m-2 rounded-full h-10 md:h-12">
@@ -133,7 +152,9 @@ const OrderLabels = () => {
           >
             Anterior
           </button>
-          <span className="text-white">Página {currentPage} de {totalPages}</span>
+          <span className="text-white">
+            Página {currentPage} de {totalPages}
+          </span>
           <button
             onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === totalPages}
@@ -145,17 +166,15 @@ const OrderLabels = () => {
       </div>
 
       {showModal && selectedOrder && (
-        <ModalOrder
-          order={selectedOrder}
-          onClose={closeModal}
-          readOnly
-        />
+        <ModalOrder order={selectedOrder} onClose={closeModal} readOnly />
       )}
 
       {showModalQrCode && selectedQrCode && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg flex flex-col justify-center items-center">
-            <h2 className="text-lg font-bold mb-4">QR Code do Pedido #{selectedQrCode._id}</h2>
+            <h2 className="text-lg font-bold mb-4">
+              QR Code do Pedido #{selectedQrCode._id}
+            </h2>
             <QRCode
               size={340}
               className="my-4"

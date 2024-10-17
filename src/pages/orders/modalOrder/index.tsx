@@ -11,22 +11,39 @@ interface ModalOrderProps {
 }
 
 const fields = [
-  { key: 'userName', label: 'Cliente', type: 'text' },
-  { key: 'status', label: 'Status', type: 'select', options: ['Entregue', 'Pendente', 'Cancelado'] },
-  { key: 'address', label: 'Endereço', type: 'text' },
-  { key: 'price', label: 'Preço', type: 'text' },
-  { key: 'plano', label: 'Plano', type: 'select', options: [
-    "Mercado Livre Flex",
-    "Mercado Livre Flex Turbo",
-    "Serviços Particular"
-  ] },
-  { key: 'phone', label: 'Telefone', type: 'text' },
-  { key: 'email', label: 'Email', type: 'email' },
-  { key: 'driver', label: 'motorista', type: 'email' },
-  { key: 'deliveryDate', label: 'Data do Pedido', type: 'date' },
+  { key: "userName", label: "Cliente", type: "text" },
+  {
+    key: "status",
+    label: "Status",
+    type: "select",
+    options: ["Entregue", "Pendente", "Cancelado"],
+  },
+  { key: "address", label: "Endereço", type: "text" },
+  { key: "price", label: "Preço", type: "text" },
+  {
+    key: "plano",
+    label: "Plano",
+    type: "select",
+    options: [
+      "Mercado Livre Flex",
+      "Mercado Livre Flex Turbo",
+      "Serviços Particular",
+    ],
+  },
+  { key: "phone", label: "Telefone", type: "text" },
+  { key: "email", label: "Email", type: "email" },
+  { key: "driver", label: "motorista", type: "email" },
+  { key: "deliveryDate", label: "Data do Pedido", type: "date" },
 ];
 
-const ModalOrder = ({ order, isClient = false, readOnly = false, onClose, onEdit, onDelete }: ModalOrderProps) => {
+const ModalOrder = ({
+  order,
+  isClient = false,
+  readOnly = false,
+  onClose,
+  onEdit,
+  onDelete,
+}: ModalOrderProps) => {
   const [editedOrder, setEditedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
@@ -47,7 +64,7 @@ const ModalOrder = ({ order, isClient = false, readOnly = false, onClose, onEdit
 
   const handleChange = (key: keyof Order, value: any) => {
     if (editedOrder) {
-      if (key === 'deliveryDate') {
+      if (key === "deliveryDate") {
         setEditedOrder({ ...editedOrder, [key]: value } as Order);
       } else {
         setEditedOrder({ ...editedOrder, [key]: value } as Order);
@@ -58,7 +75,7 @@ const ModalOrder = ({ order, isClient = false, readOnly = false, onClose, onEdit
   const formatDate = (dateString: string | undefined) => {
     if (dateString) {
       const date = new Date(dateString);
-      return isNaN(date.getTime()) ? "" : date.toISOString().split('T')[0];
+      return isNaN(date.getTime()) ? "" : date.toISOString().split("T")[0];
     }
     return "";
   };
@@ -70,29 +87,52 @@ const ModalOrder = ({ order, isClient = false, readOnly = false, onClose, onEdit
           Seu Pedido!
         </span>
         <div className="purple_border p-8 border border-black">
-          <h3 className="text-lg font-bold mb-4">Detalhes do Pedido ID: {order._id}</h3>
+          <h3 className="text-lg font-bold mb-4">
+            Detalhes do Pedido ID: {order._id}
+          </h3>
           <div className="grid grid-cols-2 gap-4">
             {fields.map(({ key, label, type, options }) => (
               <div key={key} className="mb-4">
-                <label><strong>{label}:</strong></label>
-                {type === 'select' ? (
+                <label>
+                  <strong>{label}:</strong>
+                </label>
+                {type === "select" ? (
                   <select
                     value={editedOrder?.[key] || ""}
                     onChange={(e) => handleChange(key, e.target.value)}
                     disabled={isFieldReadOnly}
-                    className={isFieldReadOnly ? `input-field-client` : `input-field`}
+                    className={
+                      isFieldReadOnly ? `input-field-client` : `input-field`
+                    }
                   >
-                    {options?.map(option => (
-                      <option key={option} value={option}>{option}</option>
+                    {options?.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
                     ))}
                   </select>
                 ) : (
                   <input
                     type={type}
-                    value={type === 'date' ? formatDate(editedOrder?.[key] as string) : editedOrder?.[key] || ""}
-                    onChange={(e) => handleChange(key, type === 'text' ? e.target.value : type === 'date' ? e.target.value : parseFloat(e.target.value))}
+                    value={
+                      type === "date"
+                        ? formatDate(editedOrder?.[key] as string)
+                        : editedOrder?.[key] || ""
+                    }
+                    onChange={(e) =>
+                      handleChange(
+                        key,
+                        type === "text"
+                          ? e.target.value
+                          : type === "date"
+                            ? e.target.value
+                            : parseFloat(e.target.value),
+                      )
+                    }
                     readOnly={isFieldReadOnly}
-                    className={isFieldReadOnly ? `input-field-client` : `input-field`}
+                    className={
+                      isFieldReadOnly ? `input-field-client` : `input-field`
+                    }
                   />
                 )}
               </div>
@@ -103,18 +143,27 @@ const ModalOrder = ({ order, isClient = false, readOnly = false, onClose, onEdit
             {!isFieldReadOnly && (
               <>
                 {onEdit && (
-                  <button onClick={handleSave} className="bg-blue-500 text-white p-2 rounded">
+                  <button
+                    onClick={handleSave}
+                    className="bg-blue-500 text-white p-2 rounded"
+                  >
                     Editar
                   </button>
                 )}
                 {onDelete && (
-                  <button onClick={onDelete} className="bg-red-500 text-white p-2 rounded">
+                  <button
+                    onClick={onDelete}
+                    className="bg-red-500 text-white p-2 rounded"
+                  >
                     Deletar
                   </button>
                 )}
               </>
             )}
-            <button onClick={onClose} className="bg-gray-500 text-white p-2 rounded">
+            <button
+              onClick={onClose}
+              className="bg-gray-500 text-white p-2 rounded"
+            >
               Fechar
             </button>
           </div>

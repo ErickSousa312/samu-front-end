@@ -11,7 +11,7 @@ export const login = (
   userData: User,
   token: string,
   setUser: React.Dispatch<React.SetStateAction<User | null>>,
-  setToken: React.Dispatch<React.SetStateAction<string | null>>
+  setToken: React.Dispatch<React.SetStateAction<string | null>>,
 ) => {
   setUser(userData);
   setToken(token);
@@ -21,7 +21,7 @@ export const login = (
 export const logout = (
   setUser: React.Dispatch<React.SetStateAction<User | null>>,
   setToken: React.Dispatch<React.SetStateAction<string | null>>,
-  navigate: (path: string) => void
+  navigate: (path: string) => void,
 ) => {
   setUser(null);
   setToken(null);

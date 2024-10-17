@@ -7,18 +7,22 @@ interface ModalOrderItemsProps {
 
 const ModalOrderItems = ({ items, onClose }: ModalOrderItemsProps) => {
   const orderItemFields = [
-    { key: 'title', label: 'Título', accessor: 'item.title' },
-    { key: 'unit_price', label: 'Preço Unitário', accessor: 'unit_price' },
-    { key: 'sale_fee', label: 'Taxa de venda', accessor: 'sale_fee' },
-    { key: 'quantity', label: 'Quantidade', accessor: 'quantity' },
-    { key: 'full_unit_price', label: 'Valor Total', accessor: 'full_unit_price' },
-    { key: 'category_id', label: 'Categoria', accessor: 'item.category_id' },
-    { key: 'condition', label: 'Condição', accessor: 'item.condition' },
-    { key: 'warranty', label: 'Garantia', accessor: 'item.warranty' }
+    { key: "title", label: "Título", accessor: "item.title" },
+    { key: "unit_price", label: "Preço Unitário", accessor: "unit_price" },
+    { key: "sale_fee", label: "Taxa de venda", accessor: "sale_fee" },
+    { key: "quantity", label: "Quantidade", accessor: "quantity" },
+    {
+      key: "full_unit_price",
+      label: "Valor Total",
+      accessor: "full_unit_price",
+    },
+    { key: "category_id", label: "Categoria", accessor: "item.category_id" },
+    { key: "condition", label: "Condição", accessor: "item.condition" },
+    { key: "warranty", label: "Garantia", accessor: "item.warranty" },
   ];
 
   const getNestedValue = (obj: any, path: string): any => {
-    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+    return path.split(".").reduce((acc, part) => acc && acc[part], obj);
   };
 
   return (
@@ -34,10 +38,12 @@ const ModalOrderItems = ({ items, onClose }: ModalOrderItemsProps) => {
               <h5 className="font-semibold">Item {index + 1}</h5>
               <div className="grid grid-cols-2 gap-4">
                 {orderItemFields.map(({ key, label, accessor }) => {
-                  const value = getNestedValue(item, accessor) || '';
+                  const value = getNestedValue(item, accessor) || "";
                   return (
                     <div key={key} className="mb-2">
-                      <label><strong>{label}:</strong></label>
+                      <label>
+                        <strong>{label}:</strong>
+                      </label>
                       <input
                         type="text"
                         value={value}
@@ -51,7 +57,10 @@ const ModalOrderItems = ({ items, onClose }: ModalOrderItemsProps) => {
             </div>
           ))}
           <div className="flex justify-center items-center mt-4">
-            <button onClick={onClose} className="bg-gray-500 text-white p-2 rounded">
+            <button
+              onClick={onClose}
+              className="bg-gray-500 text-white p-2 rounded"
+            >
               Fechar
             </button>
           </div>

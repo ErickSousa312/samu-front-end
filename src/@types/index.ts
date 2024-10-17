@@ -1,15 +1,15 @@
 export interface Order {
-    _id: string;
-    status: string;
-    userName: string;
-    address: string;
-    price: number;
-    plano: string;
-    phone: string;
-    email: string;
-    driver: string;
-    deliveryDate: Date;
-    [key: string]: any;
+  _id: string;
+  status: string;
+  userName: string;
+  address: string;
+  price: number;
+  plano: string;
+  phone: string;
+  email: string;
+  driver: string;
+  deliveryDate: Date;
+  [key: string]: any;
 }
 
 export interface OrderMl {
@@ -90,4 +90,3 @@ export type ShippingDetails = {
   tracking_number: string;
   status: string;
 };
-

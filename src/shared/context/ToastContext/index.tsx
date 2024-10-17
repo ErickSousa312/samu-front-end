@@ -1,31 +1,35 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode } from "react";
 
 interface Toast {
   id: number;
-  type: 'success' | 'error' | 'loading';
+  type: "success" | "error" | "loading";
   message: string;
 }
 
 interface ToastContextProps {
-  addToast: (toast: Omit<Toast, 'id'>) => void;
+  addToast: (toast: Omit<Toast, "id">) => void;
 }
 
 const ToastContext = createContext<ToastContextProps | undefined>(undefined);
 
-export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ToastProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
   let idCounter = 1;
 
-  const addToast = (toast: Omit<Toast, 'id'>) => {
-    setToasts(prevToasts => {
-      const updatedToasts = prevToasts.filter(t => !(t.type === 'loading' && toast.type !== 'loading'));
+  const addToast = (toast: Omit<Toast, "id">) => {
+    setToasts((prevToasts) => {
+      const updatedToasts = prevToasts.filter(
+        (t) => !(t.type === "loading" && toast.type !== "loading"),
+      );
       return [...updatedToasts, { ...toast, id: idCounter++ }];
     });
 
     // Remove the toast after 5 seconds
     setTimeout(() => {
-      setToasts(prevToasts =>
-        prevToasts.filter(t => t.id !== idCounter - 1)
+      setToasts((prevToasts) =>
+        prevToasts.filter((t) => t.id !== idCounter - 1),
       );
     }, 5000);
   };
@@ -38,14 +42,14 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           <div
             key={toast.id}
             className={`p-4 rounded-md text-white ${
-              toast.type === 'loading'
-                ? 'bg-yellow-500 flex items-center'
-                : toast.type === 'success'
-                ? 'bg-green-500'
-                : 'bg-red-500'
+              toast.type === "loading"
+                ? "bg-yellow-500 flex items-center"
+                : toast.type === "success"
+                  ? "bg-green-500"
+                  : "bg-red-500"
             }`}
           >
-            {toast.type === 'loading' && (
+            {toast.type === "loading" && (
               <div className="mr-2 animate-spin border-4 border-t-transparent border-white rounded-full w-5 h-5"></div>
             )}
             {toast.message}
@@ -59,7 +63,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (context === undefined) {
-    throw new Error('useToast must be used within a ToastProvider');
+    throw new Error("useToast must be used within a ToastProvider");
   }
   return context;
 };
