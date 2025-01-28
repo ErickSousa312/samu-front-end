@@ -53,14 +53,14 @@ const LoginPage = () => {
                 <input
                   type="text"
                   {...register("userName")}
-                  placeholder="UserName"
+                  placeholder="Digite seu usuário"
                   className="w-full h-5 px-3 py-5 my-8  bg-transparent border-b hover:outline-none focus:outline-none"
                 />
 
                 <input
                   type="password"
                   {...register("password")}
-                  placeholder="Senha"
+                  placeholder="Digite sua senha"
                   className="w-full h-5 mt6 px-3 py-5 bg-transparent border-b hover:outline-none focus:outline-none"
                 />
 

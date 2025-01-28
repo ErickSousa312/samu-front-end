@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { TypeUser } from "../../../@types/useData";
+import { baseURL } from "@/shared/services/api";
 
 interface AuthContextType {
   user: TypeUser | null;
@@ -39,14 +40,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const dataInsertLocalStorage = await new Promise(async (resolve) => {
         localStorage.setItem("token", token);
-        const response = await axios.get(
-          `http://localhost:3000/api/v1/users/name/${email}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await axios.get(`${baseURL}users/name/${email}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
         const userData: TypeUser = response.data;
         console.log(userData);
         setUser(userData);
