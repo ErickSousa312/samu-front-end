@@ -40,14 +40,14 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="w-screen h-screen m-auto">
-      <div className="relative flex h-screen  text-gray-100 antialiased flex-col justify-center overflow-hidden bg-[#121212] py-6 sm:py-12">
+    <div className="w-full h-full m-auto">
+      <div className="relative flex h-screen  text-gray-100 antialiased flex-col justify-center overflow-auto bg-[#121212] py-6 sm:py-12">
         <div className="relative py-3 sm:w-96 mx-auto text-center">
           <span className="text-2xl font-light text-gray-100">
             Logue na sua conta!
           </span>
           <div className="mt-4 bg-[#161617] shadow-md rounded-lg text-left">
-            <div className="h-2 bg-amber-400 rounded-t-md"></div>
+            <div className="h-2 bg-sky-500 rounded-t-md"></div>
             <form onSubmit={handleSubmit(onSubmit)} className="px-8 py-6 ">
               <div className="flex flex-col justify-center items-center gap-4">
                 <input
@@ -66,7 +66,7 @@ const LoginPage = () => {
 
                 <button
                   type="submit"
-                  className="mt-4 bg-amber-500 text-white py-2 px-6 rounded-md hover:bg-amber-600 "
+                  className="mt-4 bg-sky-500 text-white py-2 px-6 rounded-md hover:bg-amber-600 "
                 >
                   Login
                 </button>

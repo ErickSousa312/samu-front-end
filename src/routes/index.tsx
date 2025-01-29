@@ -16,6 +16,8 @@ import {
 import { AuthProvider } from "../shared/context";
 import ProtectedRoute from "../shared/components/protectRoute";
 import FreeMarket from "../pages/mercadolivre";
+import { SideBar } from "@/shared/components/layout/SideBar";
+import { MainLayout } from "@/shared/components/layout/MainLayout";
 
 const Routers = () => {
   return (
@@ -28,7 +30,9 @@ const Routers = () => {
             path="orders"
             element={
               <ProtectedRoute roles={["admin", "driver", "customer"]}>
-                <Orders />
+                <MainLayout>
+                  <Orders />
+                </MainLayout>
               </ProtectedRoute>
             }
           />
@@ -36,7 +40,9 @@ const Routers = () => {
             path="logistic"
             element={
               <ProtectedRoute roles={["admin"]}>
-                <LogisticPage />
+                <MainLayout>
+                  <LogisticPage />
+                </MainLayout>
               </ProtectedRoute>
             }
           />

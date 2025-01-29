@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { TypeUser } from "../../../@types/useData";
-import { baseURL } from "@/shared/services/api";
+import { baseURL } from "../../services/api";
 
 interface AuthContextType {
   user: TypeUser | null;
