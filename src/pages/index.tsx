@@ -5,7 +5,8 @@ import RegisterDriverPage from "./registerDriver";
 import DriversPage from "./drivers";
 import LogisticPage from "./logistic";
 import LabelsPage from "./labels";
-import Orders from "./orders";
+import Orders from "./dashboard";
+import DashBoard from "@/pages/dashboard";
 
 export {
   DashboardPage,
@@ -15,5 +16,5 @@ export {
   DriversPage,
   LogisticPage,
   LabelsPage,
-  Orders,
+  DashBoard,
 };

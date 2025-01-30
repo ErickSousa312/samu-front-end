@@ -1,6 +1,6 @@
 import { Content, Header, SideBar } from "../../shared/components";
 
-const Orders = () => {
+const DashBoard = () => {
   return (
     <div className="flex flex-col h-full  w-full">
       <div className="">sdf</div>
@@ -8,4 +8,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default DashBoard;

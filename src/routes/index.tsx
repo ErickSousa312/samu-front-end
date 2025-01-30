@@ -9,7 +9,6 @@ import {
   LabelsPage,
   LoginPage,
   LogisticPage,
-  Orders,
   RegisterClientPage,
   RegisterDriverPage,
 } from "../pages";
@@ -18,6 +17,7 @@ import ProtectedRoute from "../shared/components/protectRoute";
 import FreeMarket from "../pages/mercadolivre";
 import { SideBar } from "@/shared/components/layout/SideBar";
 import { MainLayout } from "@/shared/components/layout/MainLayout";
+import DashBoard from "@/pages/dashboard";
 
 const Routers = () => {
   return (
@@ -27,11 +27,11 @@ const Routers = () => {
           <Route path="/" element={<LoginPage />} />
 
           <Route
-            path="orders"
+            path="dashboard"
             element={
               <ProtectedRoute roles={["admin", "driver", "customer"]}>
                 <MainLayout>
-                  <Orders />
+                  <DashBoard />
                 </MainLayout>
               </ProtectedRoute>
             }

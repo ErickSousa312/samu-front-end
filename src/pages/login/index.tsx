@@ -28,7 +28,7 @@ const LoginPage = () => {
       await login(response.data.access_token, data.userName);
       if (response.status === 200) {
         addToast({ type: "success", message: "Login realizado com sucesso!" });
-        navigate("/orders");
+        navigate("/dashboard");
       }
     } catch (error) {
       addToast({
