@@ -187,7 +187,7 @@ const OrderListFreeMarket = () => {
             <QRCode
               size={340}
               className="my-4"
-              value={`https://api.helpdesk-maraba.cloud/api-ml/pdf/orders/${selectedQrCode.id}/${user.email}`}
+              value={`https://api.helpdesk-maraba.cloud/api-ml/pdf/orders/${selectedQrCode.id}/${user.userName}`}
             />
             <button
               onClick={closeModalQrCode}
