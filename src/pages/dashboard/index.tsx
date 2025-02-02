@@ -185,8 +185,14 @@ const Dashboard: React.FC = () => {
                     trigger: "item",
                   },
                   legend: {
-                    bottom: "1%",
+                    bottom: "5%",
                     left: "center",
+                    style: {
+                      left: 30,
+                    },
+                    textStyle: {
+                      color: "rgba(251, 251, 251, 1)",
+                    },
                     Data: chart.data.map((item) => item.name),
                   },
                   grid: {
@@ -219,8 +225,8 @@ const Dashboard: React.FC = () => {
                         length2: 10,
                       },
                       radius: [
-                        "25%",
-                        chart.title != "Destino do Paciente" ? "45%" : "48%",
+                        chart.title != "Destino do Paciente" ? "25%" : "30%",
+                        chart.title != "Destino do Paciente" ? "45%" : "58%",
                       ],
                       avoidLabelOverlap: false,
                       type: "pie",
@@ -238,7 +244,7 @@ const Dashboard: React.FC = () => {
                           shadowColor: "rgba(0, 0, 0, 0.7)",
                         },
                       },
-                      top: chart.title != "Destino do Paciente" ? -80 : -80,
+                      top: chart.title != "Destino do Paciente" ? -80 : -57,
                       bottom: chart.title != "Destino do Paciente" ? 0 : 48,
                     },
                   ],
