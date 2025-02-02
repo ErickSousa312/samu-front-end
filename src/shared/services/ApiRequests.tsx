@@ -16,6 +16,17 @@ export type ApiResponse = {
   nomeMunicipio: string;
 };
 
+const Query = (props: ApiResponse): string => {
+  const queryprops = [];
+  if (props.ano.length > 0) queryprops.push(`ano=${props.ano}`);
+  if (props.mes.length > 0) queryprops.push(`mes=${props.mes}`);
+  if (props.nomeMunicipio.length > 0)
+    queryprops.push(`nomeMunicipio=${props.nomeMunicipio}`);
+  if (props.codMunicipio.length > 0)
+    queryprops.push(`codMunicipio=${props.codMunicipio}`);
+  return queryprops.join("&");
+};
+
 export const fetchAtendimentoMotivo = async (
   props: ApiResponse,
 ): Promise<AtendimentoMotivo[]> => {
@@ -48,11 +59,12 @@ export const fetchDestinoPaciente = async (): Promise<DestinoPaciente[]> => {
   return response.data;
 };
 
-export const fetchTotalChamadasTelefonicas = async (): Promise<
-  TotalChamadasTelefonicas[]
-> => {
+export const fetchTotalChamadasTelefonicas = async (
+  props: ApiResponse,
+): Promise<TotalChamadasTelefonicas[]> => {
+  console.log(props);
   const response = await axios.get(
-    `${baseURL}totalChamadasTelefonicas?ano=2024`,
+    `${baseURL}totalChamadasTelefonicas?${Query(props)}`,
   );
   return response.data;
 };

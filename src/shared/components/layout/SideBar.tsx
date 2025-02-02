@@ -25,7 +25,7 @@ export const SideBar = () => {
     <aside className="w-full  h-[90%] pl-2 pr-2">
       <div className="p-6">
         <h1 className="text-2xl font-bold text-white text-center">DEAF</h1>
-        <img style={{ marginTop: 13 }} src={SvgDiv} alt="Logo" />
+        <img style={{ marginTop: 20 }} src={SvgDiv} alt="Logo" />
       </div>
       <nav className="flex-1">
         <ul>

@@ -12,7 +12,7 @@ const Header = ({ title }: { title: string }) => {
   };
 
   return (
-    <div className="flex-col flex justify-between items-center pt-4 pl-4 pr-4 h-[10%] ">
+    <div className="flex-col flex justify-between items-center pt-4 pl-4 pr-4 h-[13%] ">
       <div className="flex flex-row justify-between w-full pl-8 pr-8  items-center debug-border">
         <div className="flex items-center text-3xl gap-4 text-white">
           <span>{title}</span>
@@ -30,8 +30,8 @@ const Header = ({ title }: { title: string }) => {
           </button>
         </div>
       </div>
-      <div className="flex items-center">
-        <img style={{ marginTop: 13 }} src={SvgDiv} alt="Logo" />
+      <div className="flex items-center ">
+        <img style={{ marginTop: 5 }} src={SvgDiv} alt="Logo" />
       </div>
     </div>
   );

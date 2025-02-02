@@ -20,13 +20,13 @@
 
 /* width */
 ::-webkit-scrollbar {
-    width: 18px;
+    width: 10px;
     right: 15px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: #04b60400;
+    background: #2a2e32;
 }
 
 /* Handle */
