@@ -190,7 +190,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col  h-[100%] w-[100%]">
+    <div className="flex flex-col  h-[60%] w-[100%]">
       <div className="w-[100%] flex flex-row  justify-around mt-3 mb-3">
         <CardsDashboards
           link="/dashboard/atendimentos"
@@ -223,7 +223,7 @@ const Dashboard: React.FC = () => {
           }}
         ></CardsDashboards>
         <CardsDashboardsFilter
-          title="Dashboard"
+          title="Filtros"
           value="1000"
           change={{
             value: "50",
@@ -263,7 +263,7 @@ const Dashboard: React.FC = () => {
           style={{
             width: "56%",
             marginLeft: 12,
-            margin: 5,
+            margin: 8,
             padding: 3,
             paddingRight: 7,
           }}
@@ -289,7 +289,7 @@ const Dashboard: React.FC = () => {
                 fill: colorsChart[index % colorsChart.length],
               })),
           }}
-          style={{ width: "41%", marginLeft: 10, margin: 5, marginTop: "5px" }}
+          style={{ width: "41%", marginLeft: 10, margin: 5, marginTop: "8px" }}
         />
         <BarChartCompo style={{ width: "41%", margin: 5 }} />
         <FunnelCharCompo

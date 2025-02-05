@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DatePicker from "react-datepicker";
 
 interface MetricsCardProps {
   title: string;
@@ -44,26 +45,36 @@ export const CardsDashboardsFilter = ({
 }: MetricsCardProps) => {
   const [dropdownVisible, setDropdownVisible] = useState(false); // Controle de visibilidade do dropdown
   const [availableCities, setAvailableCities] = useState<string[]>(cities);
+  const [selectedYear, setSelectedYear] = useState<Date | null>(null);
 
-  // Função para alternar a visibilidade do dropdown
   const toggleDropdown = () => setDropdownVisible(!dropdownVisible);
 
-  // Função para lidar com a mudança de valores dos filtros
   const handleChange = (key: string, value: string) => {
     onFilterChange(key, value);
   };
 
+  function getYears(): number[] {
+    const years = [];
+    for (let year = 2012; year <= new Date().getFullYear(); year++) {
+      years.push(year);
+    }
+    console.log(years);
+    return years.reverse();
+  }
+
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 w-64 relative">
-      <div className="flex flex-col gap-3">
-        <h3 className="text-sm text-muted-foreground">{title}</h3>
+    <div className="bg-white rounded-lg shadow-md p-1 pt-2 w-64 h-24 items-center relative">
+      <div className="flex flex-col h-10 items-center gap-1 justify-between">
+        <h3 className="text-xl items-center flex justify-center text-muted-foreground text-center">
+          {title}
+        </h3>
 
         {/* Botão que alterna a visibilidade do dropdown */}
         <button
           onClick={toggleDropdown}
-          className="text-sm p-2 bg-blue-500 text-white rounded w-full"
+          className="text-sm p-2 bg-blue-500 text-white rounded w-4/5"
         >
-          Filtros
+          {dropdownVisible ? "Fechar" : "Abrir"}
         </button>
 
         {/* Dropdown que aparece ao clicar no botão */}
@@ -89,18 +100,20 @@ export const CardsDashboardsFilter = ({
                   ))}
                 </select>
               </div>
-
-              {/* Filtro para ano (picker de data apenas para ano) */}
               <div className="flex flex-col mb-2">
                 <label className="text-sm">Ano</label>
-                <input
-                  type="month"
-                  className="mt-1 p-2 border rounded-md text-sm"
-                  value={filters.year}
-                  onChange={(e) =>
-                    handleChange("year", e.target.value.slice(0, 4))
-                  }
-                />
+                <select
+                  className="mt-1 p-2 border rounded-md text-sm max-h-60 overflow-y-auto"
+                  value={filters.city}
+                  onChange={(e) => handleChange("year", e.target.value)}
+                >
+                  <option value="">Selecione o ano</option>
+                  {getYears().map((city, index) => (
+                    <option key={index} value={city}>
+                      {city}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Filtro para mês */}
