@@ -1,3 +1,4 @@
+import { exportToExcel } from "@/utils/exportToExcel";
 import {
   BarChart,
   Bar,
@@ -20,6 +21,7 @@ export type PropsDashboard = {
   style?: React.CSSProperties;
   layout?: LayoutType;
   title?: string;
+  dataExport?: any[];
 };
 
 export const AreaChartCompo = ({
@@ -27,6 +29,7 @@ export const AreaChartCompo = ({
   style,
   layout,
   title,
+  dataExport,
 }: PropsDashboard) => {
   const defaultData = [
     { PeriodoDia: "20:00 AS 24:00H", Total_Ocorrencias: 125 },
@@ -37,11 +40,20 @@ export const AreaChartCompo = ({
 
   return (
     <div
-      className="rounded-lg h-80 w-[600px] border bg-background p-0 pt-2 bg-[#0a0a0a] shadow-sm"
+      className="rounded-lg h-80 w-[600px] border bg-background p-0 pt-2 bg-[#181818] shadow-sm"
       style={style}
     >
-      <h1 className="text-white text-center">{title}</h1>
-      <ResponsiveContainer width="100%" height="93%">
+      <h1 className="text-white mt-2 text-md text-center">{title}</h1>
+
+      <div className="flex mt-[-28px] mb-2 justify-end">
+        <button
+          className="bg-white flex text-sm items-center pl-2 pr-2 pt-1 pb-1 rounded-md active:bg-gray-300"
+          onClick={() => exportToExcel(dataExport, "myData.xlsx")}
+        >
+          <p>Exportar</p>
+        </button>
+      </div>
+      <ResponsiveContainer width="100%" height="90%">
         <AreaChart
           width={500}
           height={300}
@@ -49,7 +61,7 @@ export const AreaChartCompo = ({
           margin={{
             top: 10,
             right: 20,
-            left: 20,
+            left: 0,
             bottom: 5,
           }}
           //   onMouseEnter={(e) => console.log("entrando")}
@@ -80,7 +92,7 @@ export const AreaChartCompo = ({
               angle: -90,
               strock: "white",
               fill: "white",
-              dx: -25,
+              dx: -17,
               dy: -10,
             }}
             tickLine={{ stroke: "white", strokeWidth: 1 }}

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 interface MetricsCardProps {
   title: string;
   value: number | string;
@@ -7,6 +9,8 @@ interface MetricsCardProps {
     isPositive: boolean;
   };
   chart?: React.ReactNode;
+  link?: string;
+  linkTile?: string;
 }
 
 export const CardsDashboards = ({
@@ -14,9 +18,11 @@ export const CardsDashboards = ({
   value,
   change,
   chart,
+  link,
+  linkTile,
 }: MetricsCardProps) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 w-64">
+    <div className="bg-white rounded-lg shadow-md hover:bg-gray-300 duration-200 p-3 w-64">
       <div className="flex items-center justify-between mb-1">
         <h3 className="text-sm text-muted-foreground">{title}</h3>
       </div>
@@ -24,16 +30,35 @@ export const CardsDashboards = ({
         <div>
           <p className="text-2xl font-bold">{value}</p>
           <div className="flex items-center gap-1 mt-1">
-            <span className="text-sm">
+            {change.value.length > 20 ? (
+              <span className="text-sm">
+                {" "}
+                {change.value.length > 20 ? "" : ""}
+                {change.value}
+              </span>
+            ) : (
+              <div className="pt-0 text-base font-semibold leading-7">
+                <p className="hover:translate-x-1 duration-200 items-center mt-1">
+                  <Link
+                    to={link}
+                    className="text-red-500 transition-all duration-300 group-hover:text-white"
+                  >
+                    {linkTile}
+                    &rarr;
+                  </Link>
+                </p>
+              </div>
+            )}
+            {/* <span className="text-sm">
               {" "}
-              {change.value.length > 20 ? "" : "+"}
+              {change.value.length > 20 ? "" : ""}
               {change.value}
-            </span>
-            <span
+            </span> */}
+            {/* <span
               className={`text-sm ${change.isPositive ? "text-green-500" : "text-red-500"}`}
             >
               {change.percentage ? change.percentage : ""}
-            </span>
+            </span> */}
           </div>
         </div>
       </div>

@@ -38,6 +38,7 @@ import { SexoAtendimentos } from "../../@types/types";
 import { AreaChartCompo } from "@/shared/components/charts/AreaChart";
 import { CardsDashboards } from "../cards/CardsDashboard";
 import { BarChartCompo } from "@/shared/components/charts/BarChart";
+import { CardsDashboardsFilter } from "../cards/CardsDashboardsFilter";
 
 const Dashboard: React.FC = () => {
   const [ano, setAno] = useState<string>("2024");
@@ -173,10 +174,27 @@ const Dashboard: React.FC = () => {
     },
   ];
 
+  const [filters, setFilters] = useState({
+    city: "",
+    year: "",
+    month: "",
+  });
+
+  const cities = ["São Paulo", "Rio de Janeiro", "Salvador"]; // Exemplo de cidades
+
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [key]: value,
+    }));
+  };
+
   return (
     <div className="flex flex-col  h-[100%] w-[100%]">
       <div className="w-[100%] flex flex-row  justify-around mt-3 mb-3">
         <CardsDashboards
+          link="/dashboard/atendimentos"
+          linkTile="Ocorrencias"
           title="Chamadas Telefônicas no ano"
           value={
             totalChamadas[0] ? totalChamadas[0].QuantidadeAtendimentos : "---"
@@ -184,6 +202,8 @@ const Dashboard: React.FC = () => {
           change={{ value: "1350", percentage: "15%", isPositive: true }}
         ></CardsDashboards>
         <CardsDashboards
+          link="/dashboard/atendimentos"
+          linkTile="Consultas"
           title="Chamadas Telefônicas no mês"
           value={
             totalChamadasMes[0]
@@ -202,11 +222,18 @@ const Dashboard: React.FC = () => {
             isPositive: true,
           }}
         ></CardsDashboards>
-        <CardsDashboards
-          title="teste"
-          value="teste"
-          change={{ value: "100", percentage: "teste", isPositive: true }}
-        ></CardsDashboards>
+        <CardsDashboardsFilter
+          title="Dashboard"
+          value="1000"
+          change={{
+            value: "50",
+            percentage: "5%",
+            isPositive: true,
+          }}
+          filters={filters}
+          cities={cities}
+          onFilterChange={handleFilterChange}
+        />
       </div>
       {/* ==================================================================================================================== */}
       <div className="flex flex-row flex-wrap h-[100%] w-[100%] ">
@@ -222,6 +249,7 @@ const Dashboard: React.FC = () => {
           style={{ width: "57%", margin: 5 }}
         /> */}
         <AreaChartCompo
+          dataExport={chamadasDiaNoite}
           title="Atendimentos por período do dia"
           data={{
             title: "Período do Dia",
@@ -232,10 +260,23 @@ const Dashboard: React.FC = () => {
             })),
           }}
           layout="vertical"
-          style={{ width: "57%", margin: 5, padding: 3, paddingRight: 7 }}
+          style={{
+            width: "56%",
+            marginLeft: 12,
+            margin: 5,
+            padding: 3,
+            paddingRight: 7,
+          }}
         />
-        <BarChartCompo style={{ width: "41%", margin: 5 }} />
         <FunnelCharCompo
+          dataExport={(sexoAtendimentos || []).map((item) => ({
+            Sexo: item.SexoDS == null ? "Não informado" : item.SexoDS,
+            Quantidade: item.Total_Ocorrencias,
+          }))}
+          titlesTable={{
+            name: "Sexo",
+            value: "Quantidade",
+          }}
           title={"Atendimentos por Sexo"}
           data={{
             title: "Atendimentos por Sexo",
@@ -248,9 +289,15 @@ const Dashboard: React.FC = () => {
                 fill: colorsChart[index % colorsChart.length],
               })),
           }}
-          style={{ width: "41%", marginLeft: 10, margin: 5, marginTop: "10px" }}
+          style={{ width: "41%", marginLeft: 10, margin: 5, marginTop: "5px" }}
         />
+        <BarChartCompo style={{ width: "41%", margin: 5 }} />
         <FunnelCharCompo
+          titlesTable={{
+            name: "faixa etária",
+            value: "Quantidade",
+          }}
+          dataExport={faixaEtaria}
           data={{
             title: "Atendimentos por Faixa etária",
             dataInfo: faixaEtaria.map((item, index) => ({
