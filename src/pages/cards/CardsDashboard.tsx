@@ -24,7 +24,7 @@ export const CardsDashboards = ({
   return (
     <div className="bg-white rounded-lg shadow-md hover:bg-gray-300 duration-200 p-3 w-64">
       <div className="flex items-center justify-between mb-1">
-        <h3 className="text-md text-muted-foreground">{title}</h3>
+        <h3 className="text-sm text-muted-foreground">{title}</h3>
       </div>
       <div className="flex items-end justify-between">
         <div>

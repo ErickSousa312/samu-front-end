@@ -63,9 +63,9 @@ export const CardsDashboardsFilter = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-1 pt-2 w-64 h-24 items-center relative">
-      <div className="flex flex-col h-10 items-center gap-1 justify-between">
-        <h3 className="text-xl items-center flex justify-center text-muted-foreground text-center">
+    <div className="bg-white rounded-lg shadow-md p-1 pt-2 w-64 h-14 items-center relative">
+      <div className="flex flex-row h-10 items-center gap-2 justify-center">
+        <h3 className="text-dm items-center ml-2 flex justify-center text-muted-foreground text-center">
           {title}
         </h3>
 
