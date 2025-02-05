@@ -27,6 +27,10 @@ export interface DestinoPaciente {
   UnidadeDS: string;
   QuantidadeAtendimentos: number;
 }
+export interface FaixaEtaria {
+  faixa_etaria: string;
+  Total_Ocorrencias: number;
+}
 
 // Total Chamadas Telefônicas
 export interface TotalChamadasTelefonicas {
@@ -37,4 +41,8 @@ export interface TotalChamadasTelefonicas {
 export interface RegistroObito {
   Obito: string;
   QuantidadeObito: number;
+}
+export interface SexoAtendimentos {
+  SexoDS: string;
+  Total_Ocorrencias: number;
 }

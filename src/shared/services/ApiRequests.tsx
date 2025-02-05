@@ -6,6 +6,8 @@ import {
   DestinoPaciente,
   TotalChamadasTelefonicas,
   RegistroObito,
+  FaixaEtaria,
+  SexoAtendimentos,
 } from "@/@types/types"; // Defina o caminho correto
 import { baseURL } from "./api";
 
@@ -65,6 +67,24 @@ export const fetchTotalChamadasTelefonicas = async (
   console.log(props);
   const response = await axios.get(
     `${baseURL}totalChamadasTelefonicas?${Query(props)}`,
+  );
+  return response.data;
+};
+export const fetchFaixaEtaria = async (
+  props: ApiResponse,
+): Promise<FaixaEtaria[]> => {
+  console.log(props);
+  const response = await axios.get(
+    `${baseURL}atendimentoFaixaEtaria?${Query(props)}`,
+  );
+  return response.data;
+};
+export const fetchAtendimentosSexo = async (
+  props: ApiResponse,
+): Promise<SexoAtendimentos[]> => {
+  console.log(props);
+  const response = await axios.get(
+    `${baseURL}atendimentosSexo?${Query(props)}`,
   );
   return response.data;
 };

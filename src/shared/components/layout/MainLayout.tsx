@@ -16,7 +16,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     .join("");
 
   return (
-    <main className="flex h-screen bg-gray-800 w-screen overflow-x-hidden">
+    <main className="flex h-screen bg-black w-screen overflow-x-hidden">
       <div className="flex-col h-[100%] w-[20%] ">
         <SideBar />
       </div>
