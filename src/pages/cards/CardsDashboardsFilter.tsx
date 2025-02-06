@@ -72,7 +72,7 @@ export const CardsDashboardsFilter = ({
         {/* Botão que alterna a visibilidade do dropdown */}
         <button
           onClick={toggleDropdown}
-          className="text-sm p-2 bg-blue-500 text-white rounded w-4/5"
+          className="text-sm p-2 bg-blue-500 text-white rounded mr-1 w-4/5"
         >
           {dropdownVisible ? "Fechar" : "Abrir"}
         </button>
