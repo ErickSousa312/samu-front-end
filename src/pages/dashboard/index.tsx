@@ -284,9 +284,7 @@ const Dashboard: React.FC = () => {
             title: "Período do Dia",
             dataInfo: atendimentoTipoOcorrencia.map((item, index) => ({
               name:
-                item.TipoDS == "**não informado**"
-                  ? "Não informado"
-                  : item.TipoDS,
+                item.TipoDS == "**não informado**" ? "Sem dados" : item.TipoDS,
               value: item.Total_Ocorrencias,
               colors: colorsChart[index % colorsChart.length],
             })),

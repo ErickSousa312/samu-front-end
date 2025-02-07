@@ -63,11 +63,12 @@ export const BarChartCompo = ({
             left: 0,
             bottom: 15,
           }}
+          barGap={"10%"}
           //   onMouseEnter={(e) => console.log("entrando")}
           //   onClick={(e) => console.log("clicado")}
           //   onMouseLeave={(e) => console.log("saindo")}
           //   onMouseMove={(e) => console.log("movendo")}
-          barCategoryGap={"30%"}
+          barCategoryGap={"20%"}
         >
           <CartesianGrid
             vertical={false}
