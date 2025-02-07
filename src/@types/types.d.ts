@@ -46,3 +46,16 @@ export interface SexoAtendimentos {
   SexoDS: string;
   Total_Ocorrencias: number;
 }
+
+export type RecordSetProps = {
+  year: (value: string) => void;
+  month: (value: string) => void;
+  city: (value: string) => void;
+  codCity: (value: string) => void;
+};
+export type RecordGetProps = {
+  year: () => string;
+  month: () => string;
+  city: () => string;
+  codCity: () => string;
+};

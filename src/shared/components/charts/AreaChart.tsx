@@ -118,6 +118,7 @@ export const AreaChartCompo = ({
           // isAnimationActive={true}
           />
           {/* <Legend /> */}
+
           <Area
             type="monotone"
             dataKey="value"

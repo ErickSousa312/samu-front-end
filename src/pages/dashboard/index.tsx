@@ -21,6 +21,7 @@ import {
   fetchObitos,
   fetchFaixaEtaria,
   fetchAtendimentosSexo,
+  fetchAtendimentoTipoOcorrencia,
 } from "@/shared/services/ApiRequests";
 
 import {
@@ -31,6 +32,9 @@ import {
   TotalChamadasTelefonicas,
   RegistroObito,
   FaixaEtaria,
+  RecordSetProps,
+  RecordGetProps,
+  TipoAtendimentos,
 } from "@/@types/types";
 import { color } from "echarts";
 import { FunnelCharCompo } from "@/shared/components/charts/FunnelChart";
@@ -39,12 +43,13 @@ import { AreaChartCompo } from "@/shared/components/charts/AreaChart";
 import { CardsDashboards } from "../cards/CardsDashboard";
 import { BarChartCompo } from "@/shared/components/charts/BarChart";
 import { CardsDashboardsFilter } from "../cards/CardsDashboardsFilter";
+import { cities } from "@/constants/cities";
 
 const Dashboard: React.FC = () => {
   const [ano, setAno] = useState<string>("2024");
   const [mes, setMes] = useState<string>("5");
   const [codMunicipio, setcodMunicipio] = useState<string>("");
-  const [nomeMunicipio, setNomeMunicipio] = useState<string>("");
+  const [nomeMunicipio, setNomeMunicipio] = useState<string>("MARABA");
 
   function getAllProps() {
     return { ano, mes, codMunicipio, nomeMunicipio };
@@ -73,7 +78,10 @@ const Dashboard: React.FC = () => {
 
   const [obitos, setObitos] = useState<RegistroObito[]>([]);
 
-  // const colorsChart = ["#8884d8", "#83a6ed", "#8dd1e1", "#82ca9d", "#a4de6c"];
+  const [atendimentoTipoOcorrencia, setAtendimentoTipoOcorrencia] = useState<
+    TipoAtendimentos[]
+  >([]);
+
   const colorsChart = [
     "#82ca9d",
     "#a4de6c",
@@ -98,6 +106,7 @@ const Dashboard: React.FC = () => {
         obitosData,
         faixaEtariaData,
         SexoAtendimentosData,
+        atendimentoTipoOcorrenciaData,
       ] = await Promise.all([
         fetchAtendimentoMotivo(getAllProps()),
         fetchChamadasDiaNoite(),
@@ -113,6 +122,7 @@ const Dashboard: React.FC = () => {
         fetchObitos(),
         fetchFaixaEtaria(getAllProps()),
         fetchAtendimentosSexo(getAllProps()),
+        fetchAtendimentoTipoOcorrencia(getAllProps()),
       ]);
 
       setAtendimentoMotivo(atendimentoMotivoData);
@@ -120,7 +130,6 @@ const Dashboard: React.FC = () => {
       setTempoResposta(tempoRespostaData);
       setDestinoPaciente(destinoPacienteData);
       setTotalChamadas(totalChamadasData);
-      console.log(totalChamadasMesData);
       setTotalChamadasMes(totalChamadasMesData);
       setObitos(obitosData);
       setFaixaEtaria(faixaEtariaData);
@@ -130,68 +139,29 @@ const Dashboard: React.FC = () => {
       setDestinoPacientesQuantidade(
         destinoPacienteData[0].QuantidadeAtendimentos,
       );
+      setAtendimentoTipoOcorrencia(atendimentoTipoOcorrenciaData);
     };
 
     fetchData();
-  }, []);
+  }, [ano, mes, codMunicipio, nomeMunicipio]);
 
-  const chartOptions = [
-    {
-      title: "Destino do Paciente",
-      data: destinoPaciente.map((item, index) => ({
-        name: item.UnidadeDS,
-        value: item.QuantidadeAtendimentos,
-        colors: colorsChart[index % colorsChart.length],
-      })),
-    },
-    {
-      title: "Ocorrências por Motivo",
-      data: atendimentoMotivo.map((item) => ({
-        name: item.MotivoDS,
-        value: item.Total_Ocorrencias,
-      })),
-    },
-    {
-      title: "Chamadas por Período do Dia",
-      data: chamadasDiaNoite.map((item) => ({
-        name: item.PeriodoDia,
-        value: item.Total_Ocorrencias,
-      })),
-    },
-    {
-      title: "Tempo de Resposta",
-      data: tempoResposta.map((item) => ({
-        name: item.TempoResposta,
-        value: item.Total_Ocorrencias,
-      })),
-    },
-    {
-      title: "Registro de Óbitos",
-      data: obitos.map((item) => ({
-        name: item.Obito,
-        value: item.QuantidadeObito,
-      })),
-    },
-  ];
+  const recordSetProps: RecordSetProps = {
+    year: (value: string) => setAno(value),
+    month: (value: string) => setMes(value),
+    city: (value: string) => setNomeMunicipio(value),
+    codCity: (value: string) => setcodMunicipio(value),
+  };
 
-  const [filters, setFilters] = useState({
-    city: "",
-    year: "",
-    month: "",
-  });
-
-  const cities = ["São Paulo", "Rio de Janeiro", "Salvador"]; // Exemplo de cidades
-
-  const handleFilterChange = (key: string, value: string) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [key]: value,
-    }));
+  const recordGetProps: RecordGetProps = {
+    year: () => ano,
+    month: () => mes,
+    city: () => nomeMunicipio,
+    codCity: () => codMunicipio,
   };
 
   return (
     <div className="flex flex-col  h-[60%] w-[100%]">
-      <div className="w-[100%] flex flex-row  justify-around mt-3 mb-3">
+      <div className="w-[100%] flex flex-row gap-3  justify-around mt-3 mb-3 ">
         <CardsDashboards
           link="/dashboard/atendimentos"
           linkTile="Ocorrencias"
@@ -223,6 +193,8 @@ const Dashboard: React.FC = () => {
           }}
         ></CardsDashboards>
         <CardsDashboardsFilter
+          recordSetProps={recordSetProps}
+          recordGetProps={recordGetProps}
           title="Filtros"
           value="1000"
           change={{
@@ -230,9 +202,7 @@ const Dashboard: React.FC = () => {
             percentage: "5%",
             isPositive: true,
           }}
-          filters={filters}
           cities={cities}
-          onFilterChange={handleFilterChange}
         />
       </div>
       {/* ==================================================================================================================== */}
@@ -262,7 +232,7 @@ const Dashboard: React.FC = () => {
           layout="vertical"
           style={{
             width: "56%",
-            marginLeft: 12,
+            marginLeft: 13,
             margin: 8,
             padding: 3,
             paddingRight: 7,
@@ -291,7 +261,6 @@ const Dashboard: React.FC = () => {
           }}
           style={{ width: "41%", marginLeft: 10, margin: 5, marginTop: "8px" }}
         />
-        <BarChartCompo style={{ width: "41%", margin: 5 }} />
         <FunnelCharCompo
           titlesTable={{
             name: "faixa etária",
@@ -306,172 +275,27 @@ const Dashboard: React.FC = () => {
               fill: colorsChart[index % colorsChart.length],
             })),
           }}
-          style={{ width: "54%", marginLeft: 10, margin: 5, marginTop: "10px" }}
+          style={{ width: "47%", marginLeft: 9, margin: 5, marginTop: "5px" }}
         />
-        <BarChartCompo style={{ width: "99%", marginTop: "10px" }} />
+        <BarChartCompo
+          dataExport={atendimentoTipoOcorrencia}
+          title="Atendimentos por período do dia"
+          data={{
+            title: "Período do Dia",
+            dataInfo: atendimentoTipoOcorrencia.map((item, index) => ({
+              name:
+                item.TipoDS == "**não informado**"
+                  ? "Não informado"
+                  : item.TipoDS,
+              value: item.Total_Ocorrencias,
+              colors: colorsChart[index % colorsChart.length],
+            })),
+          }}
+          style={{ width: "50%", margin: 5, marginLeft: 10, marginTop: "5px" }}
+        />
       </div>
     </div>
   );
 };
 
 export default Dashboard;
-
-// return (
-//   <div className=" w-full justify-items-center">
-//     <div className="flex flex-row justify-center font-bold text-center pl-8 pr-8 w-[90%]">
-//       {" "}
-//       <div className="w-80 p-2 pt-1 h-32 bg-white flex flex-col rounded-md m-4">
-//         <h2>Chamadas Telefônicas Ano</h2>
-//         {/* <h3 className="bg-red-600 h-16 flex  " style={{}}>
-//           {totalChamadas[0].QuantidadeAtendimentos}
-//         </h3> */}
-//         <div className=" h-[80%] flex flex-col items-center justify-center">
-//           <div className="flex items-center h-full text-4xl">
-//             {totalChamadasMes.length > 0
-//               ? totalChamadas[0].QuantidadeAtendimentos
-//               : "---"}
-//           </div>
-//         </div>
-//       </div>
-//       <div className="w-80 p-2 pt-1 h-32 bg-white rounded-md m-4">
-//         Chamadas Telefônicas no Mês
-//         <div className=" h-[80%]  flex flex-col items-center rounded-md justify-center">
-//           <div className="flex items-center h-full text-4xl">
-//             {totalChamadasMes.length > 0
-//               ? totalChamadasMes[0].QuantidadeAtendimentos
-//               : "---"}
-//           </div>
-//         </div>
-//       </div>
-//       <div className="w-80 p-2 pt-1 h-32 bg-[#1f2429] text-white rounded-md m-4">
-//         Filtros
-//         <div>
-//           <button className="bg-white text-black pl-3 pr-3 ml-1 mr-1 rounded-md">
-//             Ano
-//           </button>
-//           <button className="bg-white text-black pl-3 pr-3 ml-1 mr-1 rounded-md">
-//             Mês
-//           </button>
-//           <button className="bg-white text-black pl-3 pr-3 ml-1 mr-1 rounded-md">
-//             Cidade
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//     <div className="flex flex-row flex-wrap justify-center">
-//       {chartOptions.map((chart, index) => (
-//         <div className=" p-4 " key={index}>
-//           <div className="text-white text-xl h-8  text-center ">
-//             {chart.title}
-//           </div>
-//           <div
-//             className={`${chart.title != "Destino do Paciente" ? "w-[330px]" : "w-[730px]"}`}
-//           >
-//             <ReactECharts
-//               style={{
-//                 backgroundColor: "#1f2429",
-//                 marginTop: 5,
-//                 borderRadius: 8,
-//                 height: chart.title != "Destino do Paciente" ? 300 : 400,
-//               }}
-//               option={{
-//                 // title: { text: chart.title },
-//                 tooltip: {
-//                   trigger: "item",
-//                 },
-//                 legend: {
-//                   bottom: "5%",
-//                   left: "center",
-//                   style: {
-//                     left: 30,
-//                   },
-//                   textStyle: {
-//                     color: "rgba(251, 251, 251, 1)",
-//                   },
-//                   Data: chart.data.map((item) => item.name),
-//                 },
-//                 grid: {
-//                   top: "0%",
-//                   left: "0%",
-//                   right: "0%",
-//                   bottom: "0%",
-//                   containLabel: true,
-//                 },
-//                 series: [
-//                   {
-//                     label: {
-//                       formatter: "{d|{d}%}",
-//                       show: true,
-//                       size: 40,
-//                       lineHeight: 56,
-//                       rich: {
-//                         d: {
-//                           color: "white",
-//                           fontSize: 14,
-//                           fontWeight: "bold",
-//                           lineHeight: 33,
-//                           marginLeft: 0,
-//                         },
-//                       },
-//                     },
-//                     labelLine: {
-//                       show: true,
-//                       length: 10,
-//                       length2: 10,
-//                     },
-//                     radius: [
-//                       chart.title != "Destino do Paciente" ? "25%" : "30%",
-//                       chart.title != "Destino do Paciente" ? "45%" : "58%",
-//                     ],
-//                     avoidLabelOverlap: false,
-//                     type: "pie",
-//                     itemStyle: {
-//                       borderRadius: 5,
-//                     },
-//                     data: chart.data.map((item: any) => ({
-//                       name: item.value !== null ? item.name : "Não informado",
-//                       value: item.value,
-//                     })),
-//                     emphasis: {
-//                       itemStyle: {
-//                         shadowBlur: 10,
-//                         shadowOffsetX: 0,
-//                         shadowColor: "rgba(0, 0, 0, 0.7)",
-//                       },
-//                     },
-//                     top: chart.title != "Destino do Paciente" ? -80 : -57,
-//                     bottom: chart.title != "Destino do Paciente" ? 0 : 48,
-//                   },
-//                 ],
-//               }}
-//             />
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   </div>
-// );
-
-// return (
-//   <div>
-//     {chartOptions.map((chart, index) => (
-//       <ReactECharts
-//         key={index}
-//         option={{
-//           title: { text: chart.title },
-//           xAxis: {
-//             type: "category",
-//             data: chart.data.map((item) => item.name),
-//           },
-//           yAxis: { type: "value" },
-//           series: [
-//             {
-//               data: chart.data.map((item) => item.value),
-//               type: "bar",
-//             },
-//           ],
-//         }}
-//       />
-//     ))}
-//   </div>
-// );

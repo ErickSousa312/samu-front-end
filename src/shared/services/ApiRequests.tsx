@@ -8,6 +8,7 @@ import {
   RegistroObito,
   FaixaEtaria,
   SexoAtendimentos,
+  TipoAtendimentos,
 } from "@/@types/types"; // Defina o caminho correto
 import { baseURL } from "./api";
 
@@ -85,6 +86,15 @@ export const fetchAtendimentosSexo = async (
   console.log(props);
   const response = await axios.get(
     `${baseURL}atendimentosSexo?${Query(props)}`,
+  );
+  return response.data;
+};
+export const fetchAtendimentoTipoOcorrencia = async (
+  props: ApiResponse,
+): Promise<TipoAtendimentos[]> => {
+  console.log(props);
+  const response = await axios.get(
+    `${baseURL}atendimentoTipoOcorrencia?${Query(props)}`,
   );
   return response.data;
 };

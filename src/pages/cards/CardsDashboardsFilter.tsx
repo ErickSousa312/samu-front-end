@@ -1,5 +1,6 @@
 import { useState } from "react";
 import DatePicker from "react-datepicker";
+import { RecordSetProps, RecordGetProps } from "../../@types/types";
 
 interface MetricsCardProps {
   title: string;
@@ -11,12 +12,8 @@ interface MetricsCardProps {
   };
   chart?: React.ReactNode;
   cities: string[]; // Lista de cidades do banco de dados
-  filters: {
-    city: string;
-    year: string;
-    month: string;
-  };
-  onFilterChange: (key: string, value: string) => void;
+  recordSetProps: RecordSetProps;
+  recordGetProps: RecordGetProps;
 }
 
 const months = [
@@ -33,25 +30,28 @@ const months = [
   { name: "Novembro", value: "11" },
   { name: "Dezembro", value: "12" },
 ];
+function getMonthNameByValue(value) {
+  const month = months.find((month) => month.value === value);
+  console.log(month);
+  return month ? month.name : "Mês não encontrado";
+}
+function getMonthNumberByName(value) {
+  const month = months.find((month) => month.value === value);
+  console.log(month);
+  return month ? month.name : "Mês não encontrado";
+}
 
 export const CardsDashboardsFilter = ({
   title,
-  value,
-  change,
-  chart,
   cities,
-  filters,
-  onFilterChange,
+  recordSetProps,
+  recordGetProps,
 }: MetricsCardProps) => {
   const [dropdownVisible, setDropdownVisible] = useState(false); // Controle de visibilidade do dropdown
   const [availableCities, setAvailableCities] = useState<string[]>(cities);
   const [selectedYear, setSelectedYear] = useState<Date | null>(null);
 
   const toggleDropdown = () => setDropdownVisible(!dropdownVisible);
-
-  const handleChange = (key: string, value: string) => {
-    onFilterChange(key, value);
-  };
 
   function getYears(): number[] {
     const years = [];
@@ -63,18 +63,14 @@ export const CardsDashboardsFilter = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-1 pt-2 w-64 h-14 items-center relative">
+    <div className="bg-transparent rounded-lg shadow-md p-0 pt-2 w-[23%] h-14 items-center relative">
       <div className="flex flex-row h-10 items-center gap-2 justify-center">
-        <h3 className="text-dm items-center ml-2 flex justify-center text-muted-foreground text-center">
-          {title}
-        </h3>
-
         {/* Botão que alterna a visibilidade do dropdown */}
         <button
           onClick={toggleDropdown}
-          className="text-sm p-2 bg-blue-500 text-white rounded mr-1 w-4/5"
+          className="text-sm p-2 bg-blue-500 text-white rounded mr-1 w-4/5 active:bg-blue-600"
         >
-          {dropdownVisible ? "Fechar" : "Abrir"}
+          {dropdownVisible ? "Fechar" : "Filtros"}
         </button>
 
         {/* Dropdown que aparece ao clicar no botão */}
@@ -89,8 +85,8 @@ export const CardsDashboardsFilter = ({
                 <label className="text-sm">Cidade</label>
                 <select
                   className="mt-1 p-2 border rounded-md text-sm"
-                  value={filters.city}
-                  onChange={(e) => handleChange("city", e.target.value)}
+                  value={recordGetProps.city()}
+                  onChange={(e) => recordSetProps.city(e.target.value)}
                 >
                   <option value="">Selecione a cidade</option>
                   {availableCities.map((city, index) => (
@@ -104,13 +100,13 @@ export const CardsDashboardsFilter = ({
                 <label className="text-sm">Ano</label>
                 <select
                   className="mt-1 p-2 border rounded-md text-sm max-h-60 overflow-y-auto"
-                  value={filters.city}
-                  onChange={(e) => handleChange("year", e.target.value)}
+                  value={recordGetProps.year()}
+                  onChange={(e) => recordSetProps.year(e.target.value)}
                 >
                   <option value="">Selecione o ano</option>
-                  {getYears().map((city, index) => (
-                    <option key={index} value={city}>
-                      {city}
+                  {getYears().map((ano, index) => (
+                    <option key={index} value={ano}>
+                      {ano}
                     </option>
                   ))}
                 </select>
@@ -121,8 +117,8 @@ export const CardsDashboardsFilter = ({
                 <label className="text-sm">Mês</label>
                 <select
                   className="mt-1 p-2 border rounded-md text-sm"
-                  value={filters.month}
-                  onChange={(e) => handleChange("month", e.target.value)}
+                  value={recordGetProps.month()}
+                  onChange={(e) => recordSetProps.month(e.target.value)}
                 >
                   <option value="">Selecione o mês</option>
                   {months.map((month) => (
