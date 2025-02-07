@@ -38,7 +38,7 @@ export const BarChartCompo = ({
 
   return (
     <div
-      className="rounded-lg h-80 w-[600px] border bg-background p-2 pt-2 pb-3 bg-[#181818] shadow-sm"
+      className="rounded-lg h-80 w-[600px] bg-background p-2 pt-2 pb-3 bg-[#181818] shadow-sm"
       style={style}
     >
       <h1 className="text-white mt-2 text-md text-center">{title}</h1>

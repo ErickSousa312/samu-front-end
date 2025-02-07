@@ -38,7 +38,7 @@ export const BerCharCompoVertical = ({
 
   return (
     <div
-      className="rounded-lg h-96 w-[600px] border bg-background p-2 pt-2 pb-0 bg-[#181818] shadow-sm"
+      className="rounded-lg h-96 w-[600px] bg-background p-2 pt-2 pb-0 bg-[#181818] shadow-sm"
       style={style}
     >
       <h1 className="text-white mt-2 text-md text-center">{title}</h1>

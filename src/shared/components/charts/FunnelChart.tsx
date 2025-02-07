@@ -45,7 +45,7 @@ export const FunnelCharCompo = ({
 
   return (
     <div
-      className="rounded-lg h-80 overflow-x-hidden text-center w-[400px] border bg-[#181818] shadow-sm flex flex-col  pt-4 pr-2 pl-2"
+      className="rounded-lg h-80 overflow-x-hidden text-center w-[400px] bg-[#181818] shadow-sm flex flex-col  pt-4 pr-2 pl-2"
       style={style}
     >
       <h1 className="text-white mb-4">{title}</h1>
