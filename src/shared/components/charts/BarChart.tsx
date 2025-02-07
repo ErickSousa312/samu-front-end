@@ -80,7 +80,7 @@ export const BarChartCompo = ({
             dataKey="name"
             width={1}
             orientation="bottom"
-            reversed={true}
+            reversed={false}
             tick={{ fill: "white", fontSize: 12 }}
           />
           <YAxis
