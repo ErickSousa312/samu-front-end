@@ -113,7 +113,7 @@ export const FunnelCharCompo = ({
               </table>
             </div>
             <button
-              onClick={() => exportToExcel(dataExport, "myData.xlsx")}
+              onClick={() => exportToExcel(dataExport, `${title}.xlsx`)}
               className="mt-2 bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 text-xs"
             >
               Exportar para Excel

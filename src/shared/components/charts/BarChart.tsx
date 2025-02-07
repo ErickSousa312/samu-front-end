@@ -46,7 +46,7 @@ export const BarChartCompo = ({
       <div className="flex mt-[-28px] mb-2 justify-end">
         <button
           className="bg-white flex text-sm items-center pl-2 pr-2 pt-1 pb-1 rounded-md active:bg-gray-300"
-          onClick={() => exportToExcel(dataExport, "myData.xlsx")}
+          onClick={() => exportToExcel(dataExport, `${title}.xlsx`)}
         >
           <p>Exportar</p>
         </button>
