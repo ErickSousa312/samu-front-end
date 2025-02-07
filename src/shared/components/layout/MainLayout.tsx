@@ -23,7 +23,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       <img style={{ marginTop: 25 }} src={SvgDiv} alt="Logo" />
       <div className="flex flex-col h-full w-full">
         <Header title={formattedPath} />
-        <div className="flex  h-[87%] pl-1 overflow-x-hidden ">{children}</div>
+        <div className="flex  h-[100%] pl-1 overflow-x-hidden ">{children}</div>
       </div>
     </main>
   );

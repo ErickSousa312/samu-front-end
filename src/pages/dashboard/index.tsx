@@ -44,6 +44,7 @@ import { CardsDashboards } from "../cards/CardsDashboard";
 import { BarChartCompo } from "@/shared/components/charts/BarChart";
 import { CardsDashboardsFilter } from "../cards/CardsDashboardsFilter";
 import { cities } from "@/constants/cities";
+import { BerCharCompoVertical } from "@/shared/components/charts/BarCharVertical";
 
 const Dashboard: React.FC = () => {
   const [ano, setAno] = useState<string>("2024");
@@ -85,13 +86,13 @@ const Dashboard: React.FC = () => {
   const colorsChart = [
     "#82ca9d",
     "#a4de6c",
-    "#7F7FFF", // Azul Lavanda
-    "#A77FFF", // Roxo Médio
-    "#D37FFF", // Magenta Médio
-    "#FF7FCF", // Rosa Chiclete
-    "#FF99B3", // Coral Pastel
-    "#C77FFF", // Lilás Médio
-    "#FF99FF", // Rosa Néon Suave
+    "#7F7FFF",
+    "#A77FFF",
+    "#D37FFF",
+    "#FF7FCF",
+    "#FF99B3",
+    "#C77FFF",
+    "#FF99FF",
   ];
 
   useEffect(() => {
@@ -218,26 +219,21 @@ const Dashboard: React.FC = () => {
           }}
           style={{ width: "57%", margin: 5 }}
         /> */}
-        <AreaChartCompo
-          dataExport={chamadasDiaNoite}
-          title="Atendimentos por período do dia"
+        <BarChartCompo
+          dataExport={atendimentoTipoOcorrencia}
+          title="Atendimentos por Tipo de Ocorrência"
           data={{
             title: "Período do Dia",
-            dataInfo: chamadasDiaNoite.map((item, index) => ({
-              name: item.PeriodoDia.toLocaleLowerCase(),
+            dataInfo: atendimentoTipoOcorrencia.map((item, index) => ({
+              name:
+                item.TipoDS == "**não informado**" ? "Sem dados" : item.TipoDS,
               value: item.Total_Ocorrencias,
               colors: colorsChart[index % colorsChart.length],
             })),
           }}
-          layout="vertical"
-          style={{
-            width: "56%",
-            marginLeft: 13,
-            margin: 8,
-            padding: 3,
-            paddingRight: 7,
-          }}
+          style={{ width: "57%", marginLeft: 12, marginTop: 12 }}
         />
+
         <FunnelCharCompo
           dataExport={(sexoAtendimentos || []).map((item) => ({
             Sexo: item.SexoDS == null ? "Não informado" : item.SexoDS,
@@ -259,37 +255,43 @@ const Dashboard: React.FC = () => {
                 fill: colorsChart[index % colorsChart.length],
               })),
           }}
-          style={{ width: "41%", marginLeft: 10, margin: 5, marginTop: "8px" }}
+          style={{ width: "41%", marginLeft: 9, marginTop: 12 }}
         />
-        <FunnelCharCompo
-          titlesTable={{
-            name: "faixa etária",
-            value: "Quantidade",
-          }}
+        <BerCharCompoVertical
+          title="Atendimentos por Faixa Etária"
           dataExport={faixaEtaria}
           data={{
             title: "Atendimentos por Faixa etária",
             dataInfo: faixaEtaria.map((item, index) => ({
-              name: item.faixa_etaria,
+              name:
+                item.faixa_etaria == "NÃO IDENTIFICADAS"
+                  ? "Sem dados"
+                  : item.faixa_etaria.toLocaleLowerCase().replace("anos", ""),
               value: item.Total_Ocorrencias,
               fill: colorsChart[index % colorsChart.length],
             })),
           }}
-          style={{ width: "47%", marginLeft: 9, margin: 5, marginTop: "5px" }}
+          style={{ width: "47%", marginLeft: 12, marginTop: 12 }}
         />
-        <BarChartCompo
-          dataExport={atendimentoTipoOcorrencia}
+        <AreaChartCompo
+          dataExport={chamadasDiaNoite}
           title="Atendimentos por período do dia"
           data={{
             title: "Período do Dia",
-            dataInfo: atendimentoTipoOcorrencia.map((item, index) => ({
-              name:
-                item.TipoDS == "**não informado**" ? "Sem dados" : item.TipoDS,
+            dataInfo: chamadasDiaNoite.map((item, index) => ({
+              name: item.PeriodoDia.toLocaleLowerCase(),
               value: item.Total_Ocorrencias,
               colors: colorsChart[index % colorsChart.length],
             })),
           }}
-          style={{ width: "50%", margin: 5, marginLeft: 10, marginTop: "5px" }}
+          layout="vertical"
+          style={{
+            width: "51%",
+            marginLeft: 9,
+            marginTop: 12,
+            padding: 3,
+            paddingRight: 7,
+          }}
         />
       </div>
     </div>
