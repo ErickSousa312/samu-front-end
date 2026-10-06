@@ -1,69 +1,85 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
-
+import {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+  ReactNode,
+} from "react";
+import { CheckCircle2, AlertCircle, LoaderCircle, X } from "lucide-react";
 interface Toast {
   id: number;
   type: "success" | "error" | "loading";
   message: string;
 }
-
-interface ToastContextProps {
-  addToast: (toast: Omit<Toast, "id">) => void;
-}
-
-const ToastContext = createContext<ToastContextProps | undefined>(undefined);
-
-export const ToastProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+const ToastContext = createContext<
+  { addToast: (toast: Omit<Toast, "id">) => void } | undefined
+>(undefined);
+export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
-  let idCounter = 1;
-
+  const counter = useRef(0);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  useEffect(
+    () => () => {
+      timers.current.forEach(clearTimeout);
+    },
+    [],
+  );
+  const remove = (id: number) =>
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
   const addToast = (toast: Omit<Toast, "id">) => {
-    setToasts((prevToasts) => {
-      const updatedToasts = prevToasts.filter(
-        (t) => !(t.type === "loading" && toast.type !== "loading"),
-      );
-      return [...updatedToasts, { ...toast, id: idCounter++ }];
-    });
-
-    // Remove the toast after 5 seconds
-    setTimeout(() => {
-      setToasts((prevToasts) =>
-        prevToasts.filter((t) => t.id !== idCounter - 1),
-      );
-    }, 5000);
+    const id = ++counter.current;
+    setToasts((prev) => [
+      ...prev.filter(
+        (item) => !(item.type === "loading" && toast.type !== "loading"),
+      ),
+      { ...toast, id },
+    ]);
+    timers.current.push(setTimeout(() => remove(id), 5000));
   };
-
   return (
     <ToastContext.Provider value={{ addToast }}>
       {children}
-      <div className="fixed top-14 right-0 p-4 space-y-2">
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className={`p-4 rounded-md text-white ${
-              toast.type === "loading"
-                ? "bg-yellow-500 flex items-center"
-                : toast.type === "success"
-                  ? "bg-green-500"
-                  : "bg-red-500"
-            }`}
-          >
-            {toast.type === "loading" && (
-              <div className="mr-2 animate-spin border-4 border-t-transparent border-white rounded-full w-5 h-5"></div>
-            )}
-            {toast.message}
-          </div>
-        ))}
+      <div className="toast-region" aria-label="Notificações">
+        {toasts.map((toast) => {
+          const Icon =
+            toast.type === "success"
+              ? CheckCircle2
+              : toast.type === "error"
+                ? AlertCircle
+                : LoaderCircle;
+          return (
+            <div
+              key={toast.id}
+              className={`toast toast-${toast.type}`}
+              role={toast.type === "error" ? "alert" : "status"}
+            >
+              <Icon
+                size={20}
+                className={
+                  toast.type === "loading"
+                    ? "animate-spin shrink-0"
+                    : "shrink-0"
+                }
+                aria-hidden="true"
+              />
+              <p className="flex-1">{toast.message}</p>
+              <button
+                className="button button-ghost icon-button"
+                aria-label="Dispensar notificação"
+                onClick={() => remove(toast.id)}
+              >
+                <X size={16} aria-hidden="true" />
+              </button>
+            </div>
+          );
+        })}
       </div>
     </ToastContext.Provider>
   );
 };
-
 export const useToast = () => {
   const context = useContext(ToastContext);
-  if (context === undefined) {
-    throw new Error("useToast must be used within a ToastProvider");
-  }
+  if (!context) throw new Error("useToast must be used within a ToastProvider");
   return context;
 };

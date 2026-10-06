@@ -9,13 +9,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { TypeUser } from "../../../@types/useData";
-import { baseURL } from "../../services/api";
+import api from "../../services/api";
 
 interface AuthContextType {
   user: TypeUser | null;
-  login: (token: string, email: string) => Promise<boolean | undefined>;
+  login: (token: string, email: string) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,57 +24,95 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<TypeUser | null>(null);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const clearSession = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    Cookies.remove("user");
+    delete axios.defaults.headers.common.Authorization;
+    setUser(null);
+  };
+
+  const validateUser = (data: TypeUser): TypeUser => {
+    if (
+      !data ||
+      typeof data._id !== "number" ||
+      typeof data.userName !== "string" ||
+      typeof data.role !== "string"
+    ) {
+      throw new Error("Dados de usuário inválidos.");
+    }
+    return data;
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedRole = localStorage.getItem("role");
-    const storedUser = Cookies.get("user");
-
-    if (token && storedUser) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const parsedUser = JSON.parse(storedUser);
-      setUser({ ...parsedUser, role: storedRole || parsedUser.role });
-    }
+    const controller = new AbortController();
+    const restoreSession = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const storedUser = Cookies.get("user");
+        if (!token || !storedUser) {
+          clearSession();
+          return;
+        }
+        const parsedUser = validateUser(JSON.parse(storedUser));
+        const response = await api.get<TypeUser>(
+          `users/name/${encodeURIComponent(parsedUser.userName)}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            signal: controller.signal,
+            timeout: 15000,
+          },
+        );
+        if (controller.signal.aborted) return;
+        const userData = validateUser(response.data);
+        setUser(userData);
+        localStorage.setItem("role", userData.role);
+        Cookies.set("user", JSON.stringify(userData), { expires: 7 });
+      } catch {
+        if (!controller.signal.aborted) clearSession();
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
+      }
+    };
+    restoreSession();
+    return () => controller.abort();
   }, []);
 
   const login = async (token: string, email: string) => {
     try {
-      const dataInsertLocalStorage = await new Promise(async (resolve) => {
-        localStorage.setItem("token", token);
-        const response = await axios.get(`${baseURL}users/name/${email}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const userData: TypeUser = response.data;
-        console.log(userData);
-        setUser(userData);
-        Cookies.set("user", JSON.stringify(userData), { expires: 7 });
-        localStorage.setItem("role", userData.role);
-        resolve(true);
-      });
-      return dataInsertLocalStorage ? true : false;
-    } catch (error: any) {
-      console.error("Erro ao buscar dados do usuário:", error);
-      if (error.response && error.response.status === 500) {
-        alert("Erro no servidor. Por favor, tente novamente mais tarde.");
-      } else {
-        alert("Erro ao buscar os dados do usuário.");
-      }
+      if (!token) throw new Error("Token ausente.");
+      const response = await api.get<TypeUser>(
+        `users/name/${encodeURIComponent(email)}`,
+        { headers: { Authorization: `Bearer ${token}` }, timeout: 15000 },
+      );
+      const userData = validateUser(response.data);
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", userData.role);
+      Cookies.set("user", JSON.stringify(userData), { expires: 7 });
+      setUser(userData);
+      return true;
+    } catch (error) {
+      clearSession();
+      throw error;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    Cookies.remove("user");
-    setUser(null);
+    clearSession();
     navigate("/");
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAuthenticated: !!user }}
+      value={{
+        user,
+        login,
+        logout,
+        isAuthenticated: !!user && !!localStorage.getItem("token"),
+        isLoading,
+      }}
     >
       {children}
     </AuthContext.Provider>

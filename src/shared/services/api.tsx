@@ -8,7 +8,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-  if (token) {
+  if (token && !config.headers.Authorization) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -19,12 +19,6 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response) {
-      const status = error.response.status;
-      if (status >= 200 && status < 600) {
-        return Promise.resolve(error.response);
-      }
-    }
     return Promise.reject(error);
   },
 );

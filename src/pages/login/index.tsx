@@ -1,82 +1,203 @@
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useAuth } from "../../shared/context/AuthContext/AuthProvider";
-import api from "../../shared/services/api";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "../../shared/context/ToastContext";
-
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Navigate, useNavigate } from "react-router-dom";
+import {
+  HeartPulse,
+  ArrowRight,
+  UserRound,
+  LockKeyhole,
+  Eye,
+  EyeOff,
+  LoaderCircle,
+  AlertCircle,
+} from "lucide-react";
+import { useAuth } from "@/shared/context/AuthContext/AuthProvider";
+import api from "@/shared/services/api";
+import { useToast } from "@/shared/context/ToastContext";
 interface LoginFormInputs {
   userName: string;
   password: string;
 }
-
 const LoginPage = () => {
-  const { register, handleSubmit } = useForm<LoginFormInputs>();
-  const { login } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormInputs>();
+  const { login, isLoading, isAuthenticated } = useAuth();
   const { addToast } = useToast();
-
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [capsLock, setCapsLock] = useState(false);
   const navigate = useNavigate();
-
-  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-    addToast({
-      type: "loading",
-      message: "Aguarde, estamos processando seu login...",
-    });
-
+  useEffect(() => {
+    document.title = "Entrar · SAMU";
+  }, []);
+  const onSubmit = async (data: LoginFormInputs) => {
+    setError("");
     try {
-      const response = await api.post(`/auth/login`, data);
-      console.log(response);
+      const response = await api.post("/auth/login", data);
       await login(response.data.access_token, data.userName);
-      if (response.status === 200) {
-        addToast({ type: "success", message: "Login realizado com sucesso!" });
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      addToast({
-        type: "error",
-        message: "Falha no login. Verifique suas credenciais.",
-      });
-      console.error("Login failed:", error);
+      addToast({ type: "success", message: "Login realizado." });
+      navigate("/dashboard");
+    } catch {
+      setError(
+        "Não foi possível entrar. Verifique suas credenciais e tente novamente.",
+      );
     }
   };
-
+  if (!isLoading && isAuthenticated)
+    return <Navigate to="/dashboard" replace />;
   return (
-    <div className="w-full h-full m-auto">
-      <div className="relative flex h-screen  text-gray-100 antialiased flex-col justify-center overflow-auto bg-[#121212] py-6 sm:py-12">
-        <div className="relative py-3 sm:w-96 mx-auto text-center">
-          <span className="text-2xl font-light text-gray-100">
-            Logue na sua conta!
-          </span>
-          <div className="mt-4 bg-[#161617] shadow-md rounded-lg text-left">
-            <div className="h-2 bg-sky-500 rounded-t-md"></div>
-            <form onSubmit={handleSubmit(onSubmit)} className="px-8 py-6 ">
-              <div className="flex flex-col justify-center items-center gap-4">
-                <input
-                  type="text"
-                  {...register("userName")}
-                  placeholder="Digite seu usuário"
-                  className="w-full h-5 px-3 py-5 my-8  bg-transparent border-b hover:outline-none focus:outline-none"
+    <div className="login-shell">
+      <main className="login-form-area">
+        <div className="login-form">
+          <div className="brand">
+            <span className="brand-icon">
+              <HeartPulse aria-hidden="true" />
+            </span>
+            <div>
+              <strong>SAMU</strong>
+              <small>Central de gestão</small>
+            </div>
+          </div>
+          <div className="login-heading">
+            <h1>Acessar sistema</h1>
+            <p className="muted">Informe seu usuário e senha.</p>
+          </div>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            {error && (
+              <div role="alert" className="login-error">
+                <AlertCircle size={19} aria-hidden="true" />
+                <p>{error}</p>
+              </div>
+            )}
+            <div className="field">
+              <label htmlFor="login-user">Usuário</label>
+              <div className="login-input-wrap">
+                <UserRound
+                  className="login-input-icon"
+                  size={19}
+                  aria-hidden="true"
                 />
-
                 <input
-                  type="password"
-                  {...register("password")}
-                  placeholder="Digite sua senha"
-                  className="w-full h-5 mt6 px-3 py-5 bg-transparent border-b hover:outline-none focus:outline-none"
+                  id="login-user"
+                  className="input"
+                  autoComplete="username"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  placeholder="Seu usuário"
+                  disabled={isSubmitting || isLoading}
+                  {...register("userName", {
+                    required: "Informe seu usuário.",
+                  })}
+                  aria-invalid={!!errors.userName}
+                  aria-describedby={
+                    errors.userName ? "login-user-error" : undefined
+                  }
                 />
-
+              </div>
+              {errors.userName && (
+                <p id="login-user-error" role="alert" className="field-error">
+                  {errors.userName.message}
+                </p>
+              )}
+            </div>
+            <div className="field">
+              <label htmlFor="login-password">Senha</label>
+              <div className="login-input-wrap">
+                <LockKeyhole
+                  className="login-input-icon"
+                  size={19}
+                  aria-hidden="true"
+                />
+                <input
+                  id="login-password"
+                  className="input"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="Sua senha"
+                  disabled={isSubmitting || isLoading}
+                  onKeyDown={(event) =>
+                    setCapsLock(event.getModifierState("CapsLock"))
+                  }
+                  onKeyUp={(event) =>
+                    setCapsLock(event.getModifierState("CapsLock"))
+                  }
+                  {...register("password", {
+                    required: "Informe sua senha.",
+                    onBlur: () => setCapsLock(false),
+                  })}
+                  aria-invalid={!!errors.password}
+                  aria-describedby={
+                    [
+                      errors.password ? "login-password-error" : "",
+                      capsLock ? "login-caps-lock" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ") || undefined
+                  }
+                />
                 <button
-                  type="submit"
-                  className="mt-4 bg-sky-500 text-white py-2 px-6 rounded-md hover:bg-amber-600 "
+                  className="login-password-toggle"
+                  type="button"
+                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                  aria-pressed={showPassword}
+                  aria-controls="login-password"
+                  disabled={isSubmitting || isLoading}
+                  onClick={() => setShowPassword((value) => !value)}
                 >
-                  Login
+                  {showPassword ? (
+                    <EyeOff size={19} aria-hidden="true" />
+                  ) : (
+                    <Eye size={19} aria-hidden="true" />
+                  )}
                 </button>
               </div>
-            </form>
-          </div>
+              {capsLock && (
+                <p
+                  id="login-caps-lock"
+                  className="login-caps-lock"
+                  role="status"
+                >
+                  Caps Lock ativado.
+                </p>
+              )}
+              {errors.password && (
+                <p
+                  id="login-password-error"
+                  role="alert"
+                  className="field-error"
+                >
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+            <button
+              className="button button-primary login-submit"
+              type="submit"
+              disabled={isSubmitting || isLoading}
+              aria-busy={isSubmitting || isLoading}
+            >
+              {isSubmitting
+                ? "Entrando..."
+                : isLoading
+                  ? "Validando sessão..."
+                  : "Entrar no painel"}
+              {isSubmitting || isLoading ? (
+                <LoaderCircle
+                  size={18}
+                  className="animate-spin"
+                  aria-hidden="true"
+                />
+              ) : (
+                <ArrowRight size={18} aria-hidden="true" />
+              )}
+            </button>
+          </form>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
-
 export default LoginPage;

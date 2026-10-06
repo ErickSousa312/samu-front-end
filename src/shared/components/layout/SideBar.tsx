@@ -1,108 +1,116 @@
 import { useState } from "react";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import SvgDiv from "@/assets/divSVG.svg";
-import { TiHome } from "react-icons/ti";
-import { FaChartBar } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
+import {
+  HeartPulse,
+  LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
+  ShieldCheck,
+} from "lucide-react";
+import { useAuth } from "../../context/AuthContext/AuthProvider";
+import { navigation } from "./navigation";
 
-interface ISideBarProps {
-  children: React.ReactNode;
-}
+const roleLabels: Record<string, string> = {
+  admin: "Administrador",
+  user: "Usuário interno",
+};
 
 export const SideBar = () => {
-  const [isExpanded, setIsExpanded] = useState(true);
-  const currentPath = window.location.pathname;
-  console.log("currentPath", currentPath);
-  const isActiveRoute = (path: string) => currentPath === path;
+  const { user, logout } = useAuth();
+  const [collapsed, setCollapsed] = useState(
+    () => localStorage.getItem("sidebar-collapsed") === "true",
+  );
+  const visibleItems = navigation.filter((item) =>
+    item.roles.includes(user?.role || ""),
+  );
 
-  const getItemClass = (path: string) =>
-    `flex items-center px-4 py-2 rounded ${
-      isActiveRoute(path)
-        ? "bg-gray-700 text-white"
-        : "text-gray-300 hover:bg-gray-700"
-    }`;
+  const groupedItems = visibleItems.reduce<Record<string, typeof visibleItems>>(
+    (acc, item) => {
+      const section = item.section || "Geral";
+      acc[section] = [...(acc[section] || []), item];
+      return acc;
+    },
+    {},
+  );
+
+  const toggleSidebar = () => {
+    setCollapsed((current) => {
+      const next = !current;
+      localStorage.setItem("sidebar-collapsed", String(next));
+      return next;
+    });
+  };
 
   return (
-    <aside className="w-full  h-[90%] pl-2 pr-2">
-      <div className="p-6">
-        <h1 className="text-2xl font-bold text-white text-center">DEAF</h1>
-        <img style={{ marginTop: 20 }} src={SvgDiv} alt="Logo" />
-      </div>
-      <nav className="flex-1">
-        <ul>
-          <li className="mb-2">
-            <a href="#" className={getItemClass("/dashboard")}>
-              <div className="w-6 h-6 justify-items-center align-middle bg-red-500 rounded-lg">
-                <TiHome
-                  color="white"
-                  size={19}
-                  style={{
-                    backgroundColor: "transparent",
-                    marginTop: 1,
-                  }}
-                />
-              </div>
-              <i className="fas fa-tachometer-alt mr-3"></i> Dashboard
-            </a>
-          </li>
-          <li className="mb-2">
-            <a href="#" className={getItemClass("/ocorrencias")}>
-              <div className="w-6 h-6 justify-items-center align-middle bg-red-500 rounded-lg">
-                <FaChartBar
-                  color="white"
-                  size={17}
-                  style={{ backgroundColor: "transparent", marginTop: 3 }}
-                />
-              </div>
-              <i className="fas fa-chart-bar mr-3"></i> Ocorrências
-            </a>
-          </li>
-          <li className="mb-2">
-            <a href="#" className={getItemClass("/consultas")}>
-              <div className="w-6 h-6 justify-items-center align-middle bg-red-500 rounded-lg">
-                <TiHome
-                  color="white"
-                  size={19}
-                  style={{ backgroundColor: "transparent", marginTop: 1 }}
-                />
-              </div>
-              <i className="fas fa-search mr-3"></i> Consultas
-            </a>
-          </li>
-          <li className="mb-2">
-            <a href="#" className={getItemClass("/configuracao")}>
-              <div className="w-6 h-6 justify-items-center align-middle bg-red-500 rounded-lg">
-                <TiHome
-                  color="white"
-                  size={19}
-                  style={{ backgroundColor: "transparent", marginTop: 1 }}
-                />
-              </div>
-              <i className="fas fa-cog mr-3"></i> Configuração
-            </a>
-          </li>
-          <li className="mb-2">
-            <a href="#" className={getItemClass("/perfil")}>
-              <div className="w-6 h-6 justify-items-center align-middle bg-red-500 rounded-lg">
-                <TiHome
-                  color="white"
-                  size={19}
-                  style={{ backgroundColor: "transparent", marginTop: 1 }}
-                />
-              </div>
-              <i className="fas fa-user mr-3"></i> Perfil
-            </a>
-          </li>
-        </ul>
-      </nav>
-      {/* <div className="p-6">
-        <div className="bg-gray-700 p-4 rounded">
-          <p className="text-sm text-gray-300">Precisa de ajuda?</p>
-          <p className="text-sm text-gray-300">Cheque a documentação</p>
-          <button className="mt-4 bg-red-600 text-white px-4 py-2 rounded">
-            Documentação
-          </button>
+    <aside className={`app-sidebar ${collapsed ? "collapsed" : ""}`}>
+      <button
+        type="button"
+        className="sidebar-collapse-button"
+        onClick={toggleSidebar}
+        aria-label={collapsed ? "Expandir menu lateral" : "Recolher menu lateral"}
+        aria-expanded={!collapsed}
+        title={collapsed ? "Expandir menu" : "Recolher menu"}
+      >
+        {collapsed ? (
+          <PanelLeftOpen size={18} aria-hidden="true" />
+        ) : (
+          <PanelLeftClose size={18} aria-hidden="true" />
+        )}
+      </button>
+      <div className="brand">
+        <span className="brand-icon">
+          <HeartPulse aria-hidden="true" />
+        </span>
+        <div className="brand-copy">
+          <strong>SAMU</strong>
+          <small>Central de gestão</small>
         </div>
-      </div> */}
+      </div>
+
+      <div className="sidebar-user-card">
+        <div className="sidebar-user-avatar" aria-hidden="true">
+          {user?.userName?.slice(0, 2).toUpperCase() || "SU"}
+        </div>
+        <div className="sidebar-user-meta">
+          <span className="sidebar-user-name">{user?.userName || "Usuário"}</span>
+          <span className="sidebar-user-role">
+            <ShieldCheck size={12} aria-hidden="true" />
+            {roleLabels[user?.role || "user"] || "Usuário"}
+          </span>
+        </div>
+      </div>
+
+      <p className="nav-caption">ESPAÇO DE TRABALHO</p>
+      <nav aria-label="Navegação principal" className="sidebar-nav">
+        {Object.entries(groupedItems).map(([section, items]) => (
+          <div key={section} className="nav-group">
+            <p className="nav-section-label">{section}</p>
+            <ul className="nav-list">
+              {items.map(({ path, title, icon: Icon }) => (
+                <li key={path}>
+                  <NavLink
+                    to={path}
+                    end
+                    title={collapsed ? title : undefined}
+                    aria-label={collapsed ? title : undefined}
+                    className={({ isActive }) =>
+                      `nav-link ${isActive ? "active" : ""}`
+                    }
+                  >
+                    <Icon size={19} aria-hidden="true" />
+                    <span>{title}</span>
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </nav>
+
+      <button type="button" className="sidebar-logout" onClick={logout}>
+        <LogOut size={16} aria-hidden="true" />
+        <span>Sair do sistema</span>
+      </button>
     </aside>
   );
 };
