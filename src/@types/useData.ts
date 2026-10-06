@@ -1,5 +1,5 @@
 export type TypeUser = {
-  _id: string;
+  _id: number;
   userName: string;
   role: string;
 };

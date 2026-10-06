@@ -47,6 +47,11 @@ export interface SexoAtendimentos {
   Total_Ocorrencias: number;
 }
 
+export interface TipoAtendimentos {
+  TipoDS: string;
+  Total_Ocorrencias: number;
+}
+
 export type RecordSetProps = {
   year: (value: string) => void;
   month: (value: string) => void;

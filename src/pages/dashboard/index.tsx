@@ -1,42 +1,21 @@
 import React, { useEffect, useState } from "react";
-import ReactECharts from "echarts-for-react";
 import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  LabelList,
-  ResponsiveContainer,
-} from "recharts";
-import {
-  fetchAtendimentoMotivo,
   fetchChamadasDiaNoite,
-  fetchTempoResposta,
   fetchDestinoPaciente,
   fetchTotalChamadasTelefonicas,
-  fetchObitos,
   fetchFaixaEtaria,
   fetchAtendimentosSexo,
   fetchAtendimentoTipoOcorrencia,
 } from "@/shared/services/ApiRequests";
 
 import {
-  AtendimentoMotivo,
   AtendimentoChamadasDiaNoite,
-  TempoResposta,
-  DestinoPaciente,
   TotalChamadasTelefonicas,
-  RegistroObito,
   FaixaEtaria,
   RecordSetProps,
   RecordGetProps,
   TipoAtendimentos,
 } from "@/@types/types";
-import { color } from "echarts";
 import { FunnelCharCompo } from "@/shared/components/charts/FunnelChart";
 import { SexoAtendimentos } from "../../@types/types";
 import { AreaChartCompo } from "@/shared/components/charts/AreaChart";
@@ -45,6 +24,47 @@ import { BarChartCompo } from "@/shared/components/charts/BarChart";
 import { CardsDashboardsFilter } from "../cards/CardsDashboardsFilter";
 import { cities } from "@/constants/cities";
 import { BerCharCompoVertical } from "@/shared/components/charts/BarCharVertical";
+import { Activity, BarChart3, LoaderCircle } from "lucide-react";
+
+const DashboardLoading = ({ city, month, year }: { city: string; month: string; year: string }) => (
+  <div className="dashboard-loading" role="status" aria-live="polite">
+    <section className="dashboard-loading-status">
+      <span className="dashboard-loading-icon"><LoaderCircle size={20} /></span>
+      <div>
+        <strong>Atualizando visão geral</strong>
+        <p>Consolidando os indicadores de {city || "todos os municípios"} para {month || "todos os meses"}/{year || "todos os anos"}.</p>
+      </div>
+      <span className="dashboard-loading-dots" aria-hidden="true"><i /><i /><i /></span>
+    </section>
+
+    <section className="panel dashboard-skeleton-summary" aria-hidden="true">
+      <div className="dashboard-skeleton-heading"><span className="dashboard-skeleton dashboard-skeleton-short" /><span className="dashboard-skeleton dashboard-skeleton-title" /></div>
+      <div className="summary-grid">
+        {[0, 1, 2].map((item) => <div className="summary-item dashboard-skeleton-card" key={item}><span className="dashboard-skeleton dashboard-skeleton-label" /><strong className="dashboard-skeleton dashboard-skeleton-value" /></div>)}
+      </div>
+    </section>
+
+    <div className="metric-grid" aria-hidden="true">
+      {[0, 1, 2].map((item) => <article className="metric-card dashboard-skeleton-metric" key={item}><span className="dashboard-skeleton dashboard-skeleton-label" /><span className="dashboard-skeleton dashboard-skeleton-number" /><span className="dashboard-skeleton dashboard-skeleton-note" /></article>)}
+    </div>
+
+    <section className="panel dashboard-skeleton-filter" aria-hidden="true">
+      <div className="dashboard-skeleton-filter-title"><Activity size={17} /><span className="dashboard-skeleton dashboard-skeleton-short" /></div>
+      <div className="filter-grid">{[0, 1, 2].map((item) => <span className="dashboard-skeleton dashboard-skeleton-input" key={item} />)}</div>
+    </section>
+
+    <div className="chart-grid" aria-hidden="true">
+      {[0, 1, 2, 3].map((item) => (
+        <section className="panel dashboard-skeleton-chart-card" key={item}>
+          <div><span className="dashboard-skeleton dashboard-skeleton-chart-title" /><BarChart3 size={18} /></div>
+          <div className="dashboard-skeleton-chart">
+            {[42, 68, 51, 83, 62, 76, 48].map((height, index) => <i key={index} style={{ height: `${height}%` }} />)}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+);
 
 const Dashboard: React.FC = () => {
   const [ano, setAno] = useState<string>("2024");
@@ -52,18 +72,9 @@ const Dashboard: React.FC = () => {
   const [codMunicipio, setcodMunicipio] = useState<string>("");
   const [nomeMunicipio, setNomeMunicipio] = useState<string>("MARABA");
 
-  function getAllProps() {
-    return { ano, mes, codMunicipio, nomeMunicipio };
-  }
-
-  const [atendimentoMotivo, setAtendimentoMotivo] = useState<
-    AtendimentoMotivo[]
-  >([]);
   const [chamadasDiaNoite, setChamadasDiaNoite] = useState<
     AtendimentoChamadasDiaNoite[]
   >([]);
-  const [tempoResposta, setTempoResposta] = useState<TempoResposta[]>([]);
-  const [destinoPaciente, setDestinoPaciente] = useState<DestinoPaciente[]>([]);
   const [totalChamadas, setTotalChamadas] = useState<
     TotalChamadasTelefonicas[]
   >([]);
@@ -77,7 +88,9 @@ const Dashboard: React.FC = () => {
   const [sexoAtendimentos, setAtendimentosSexo] =
     useState<SexoAtendimentos[]>();
 
-  const [obitos, setObitos] = useState<RegistroObito[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [retry, setRetry] = useState(0);
 
   const [atendimentoTipoOcorrencia, setAtendimentoTipoOcorrencia] = useState<
     TipoAtendimentos[]
@@ -96,55 +109,79 @@ const Dashboard: React.FC = () => {
   ];
 
   useEffect(() => {
+    const controller = new AbortController();
+    const props = { ano, mes, codMunicipio, nomeMunicipio };
+    setIsLoading(true);
+    setErrorMessage("");
+    setChamadasDiaNoite([]);
+    setTotalChamadas([]);
+    setTotalChamadasMes([]);
+    setFaixaEtaria([]);
+    setAtendimentosSexo([]);
+    setAtendimentoTipoOcorrencia([]);
+    setDestinoPacientes(undefined);
+    setDestinoPacientesQuantidade(undefined);
+
+    const load = async <T,>(
+      request: Promise<T>,
+      update: (value: T) => void,
+    ) => {
+      try {
+        const result = await request;
+        if (!controller.signal.aborted) update(result);
+      } catch {
+        if (!controller.signal.aborted) {
+          setErrorMessage(
+            "Não foi possível carregar alguns indicadores. Tente novamente.",
+          );
+        }
+      }
+    };
+
     const fetchData = async () => {
-      const [
-        atendimentoMotivoData,
-        chamadasDiaNoiteData,
-        tempoRespostaData,
-        destinoPacienteData,
-        totalChamadasData,
-        totalChamadasMesData,
-        obitosData,
-        faixaEtariaData,
-        SexoAtendimentosData,
-        atendimentoTipoOcorrenciaData,
-      ] = await Promise.all([
-        fetchAtendimentoMotivo(getAllProps()),
-        fetchChamadasDiaNoite(),
-        fetchTempoResposta(),
-        fetchDestinoPaciente(),
-        fetchTotalChamadasTelefonicas({
-          ano: ano,
-          mes: "",
-          codMunicipio: "",
-          nomeMunicipio: "",
+      await Promise.all([
+        load(
+          fetchChamadasDiaNoite(props, controller.signal),
+          setChamadasDiaNoite,
+        ),
+        load(fetchDestinoPaciente(props, controller.signal), (data) => {
+          const mostFrequent = data.reduce(
+            (best, item) =>
+              !best || item.QuantidadeAtendimentos > best.QuantidadeAtendimentos
+                ? item
+                : best,
+            undefined as (typeof data)[number] | undefined,
+          );
+          setDestinoPacientes(mostFrequent?.UnidadeDS);
+          setDestinoPacientesQuantidade(mostFrequent?.QuantidadeAtendimentos);
         }),
-        fetchTotalChamadasTelefonicas(getAllProps()),
-        fetchObitos(),
-        fetchFaixaEtaria(getAllProps()),
-        fetchAtendimentosSexo(getAllProps()),
-        fetchAtendimentoTipoOcorrencia(getAllProps()),
+        load(
+          fetchTotalChamadasTelefonicas(
+            { ...props, mes: "" },
+            controller.signal,
+          ),
+          setTotalChamadas,
+        ),
+        load(
+          fetchTotalChamadasTelefonicas(props, controller.signal),
+          setTotalChamadasMes,
+        ),
+        load(fetchFaixaEtaria(props, controller.signal), setFaixaEtaria),
+        load(
+          fetchAtendimentosSexo(props, controller.signal),
+          setAtendimentosSexo,
+        ),
+        load(
+          fetchAtendimentoTipoOcorrencia(props, controller.signal),
+          setAtendimentoTipoOcorrencia,
+        ),
       ]);
-
-      setAtendimentoMotivo(atendimentoMotivoData);
-      setChamadasDiaNoite(chamadasDiaNoiteData);
-      setTempoResposta(tempoRespostaData);
-      setDestinoPaciente(destinoPacienteData);
-      setTotalChamadas(totalChamadasData);
-      setTotalChamadasMes(totalChamadasMesData);
-      setObitos(obitosData);
-      setFaixaEtaria(faixaEtariaData);
-      setAtendimentosSexo(SexoAtendimentosData);
-
-      setDestinoPacientes(destinoPacienteData[0].UnidadeDS);
-      setDestinoPacientesQuantidade(
-        destinoPacienteData[0].QuantidadeAtendimentos,
-      );
-      setAtendimentoTipoOcorrencia(atendimentoTipoOcorrenciaData);
+      if (!controller.signal.aborted) setIsLoading(false);
     };
 
     fetchData();
-  }, [ano, mes, codMunicipio, nomeMunicipio]);
+    return () => controller.abort();
+  }, [ano, mes, codMunicipio, nomeMunicipio, retry]);
 
   const recordSetProps: RecordSetProps = {
     year: (value: string) => setAno(value),
@@ -160,65 +197,106 @@ const Dashboard: React.FC = () => {
     codCity: () => codMunicipio,
   };
 
+  const summaryItems = [
+    {
+      label: "Ano",
+      value: totalChamadas[0]
+        ? totalChamadas[0].QuantidadeAtendimentos.toLocaleString("pt-BR")
+        : "---",
+    },
+    {
+      label: "Mês",
+      value: totalChamadasMes[0]
+        ? totalChamadasMes[0].QuantidadeAtendimentos.toLocaleString("pt-BR")
+        : "---",
+    },
+    {
+      label: "Destino principal",
+      value: destinoPacientes ? destinoPacientes : "---",
+    },
+  ];
+
   return (
-    <div className="flex flex-col  h-[60%] w-[100%]">
-      <div className="w-[100%] flex flex-row gap-3  justify-around mt-3 mb-3 ">
+    <div className="stack" aria-busy={isLoading}>
+      {isLoading ? (
+        <DashboardLoading city={nomeMunicipio} month={mes} year={ano} />
+      ) : (
+        <>
+      {errorMessage && (
+        <div role="alert" className="notice notice-error">
+          {errorMessage}
+          <button
+            className="button button-secondary ml-3"
+            onClick={() => setRetry((value) => value + 1)}
+          >
+            Tentar novamente
+          </button>
+        </div>
+      )}
+
+      <section className="panel summary-panel">
+        <div className="summary-header">
+          <div>
+            <p className="eyebrow">Resumo do período</p>
+            <h1>
+              {nomeMunicipio || "Município"} · {mes}/{ano}
+            </h1>
+          </div>
+          <span className="summary-badge">Dados operacionais</span>
+        </div>
+
+        <div className="summary-grid">
+          {summaryItems.map((item) => (
+            <div key={item.label} className="summary-item">
+              <span>{item.label}</span>
+              <strong>{item.value}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="metric-grid">
         <CardsDashboards
-          link="/dashboard/atendimentos"
-          linkTile="Ocorrencias"
-          title="Chamadas Telefônicas no ano"
+          title="Chamadas telefônicas no ano"
           value={
             totalChamadas[0] ? totalChamadas[0].QuantidadeAtendimentos : "---"
           }
-          change={{ value: "1350", percentage: "15%", isPositive: true }}
+          change={{
+            value: "Total acumulado no período selecionado",
+            percentage: "Ano",
+            isPositive: true,
+          }}
         ></CardsDashboards>
         <CardsDashboards
-          link="/dashboard/atendimentos"
-          linkTile="Consultas"
-          title="Chamadas Telefônicas no mês"
+          title="Chamadas telefônicas no mês"
           value={
             totalChamadasMes[0]
               ? totalChamadasMes[0].QuantidadeAtendimentos
               : "---"
           }
-          change={{ value: "121", percentage: "5%", isPositive: true }}
+          change={{
+            value: "Total registrado no mês atual",
+            percentage: "Mês",
+            isPositive: true,
+          }}
         ></CardsDashboards>
         <CardsDashboards
           title="Destino mais frequente"
-          value={
-            destinoPacientesQuantidade ? destinoPacientesQuantidade : "---"
-          }
+          value={destinoPacientesQuantidade ?? "---"}
           change={{
             value: destinoPacientes ? destinoPacientes : "---",
+            percentage: "Principal destino",
             isPositive: true,
           }}
         ></CardsDashboards>
-        <CardsDashboardsFilter
-          recordSetProps={recordSetProps}
-          recordGetProps={recordGetProps}
-          title="Filtros"
-          value="1000"
-          change={{
-            value: "50",
-            percentage: "5%",
-            isPositive: true,
-          }}
-          cities={cities}
-        />
       </div>
-      {/* ==================================================================================================================== */}
-      <div className="flex flex-row flex-wrap h-[100%] w-[100%] ">
-        {/* <BarChartCompo
-          data={{
-            title: "Período do Dia",
-            dataInfo: chamadasDiaNoite.map((item, index) => ({
-              name: item.PeriodoDia,
-              value: item.Total_Ocorrencias,
-              colors: colorsChart[index % colorsChart.length],
-            })),
-          }}
-          style={{ width: "57%", margin: 5 }}
-        /> */}
+      <CardsDashboardsFilter
+        recordSetProps={recordSetProps}
+        recordGetProps={recordGetProps}
+        title="Filtros"
+        cities={cities}
+      />
+      <div className="chart-grid">
         <BarChartCompo
           dataExport={atendimentoTipoOcorrencia}
           title="Atendimentos por Tipo de Ocorrência"
@@ -226,12 +304,13 @@ const Dashboard: React.FC = () => {
             title: "Período do Dia",
             dataInfo: atendimentoTipoOcorrencia.map((item, index) => ({
               name:
-                item.TipoDS == "**não informado**" ? "Sem dados" : item.TipoDS,
+                item.TipoDS == "**não informado**"
+                  ? "Sem dados"
+                  : item.TipoDS || "Sem dados",
               value: item.Total_Ocorrencias,
               colors: colorsChart[index % colorsChart.length],
             })),
           }}
-          style={{ width: "57%", marginLeft: 12, marginTop: 12 }}
         />
 
         <FunnelCharCompo
@@ -255,7 +334,6 @@ const Dashboard: React.FC = () => {
                 fill: colorsChart[index % colorsChart.length],
               })),
           }}
-          style={{ width: "41%", marginLeft: 9, marginTop: 12 }}
         />
         <BerCharCompoVertical
           title="Atendimentos por Faixa Etária"
@@ -266,12 +344,13 @@ const Dashboard: React.FC = () => {
               name:
                 item.faixa_etaria == "NÃO IDENTIFICADAS"
                   ? "Sem dados"
-                  : item.faixa_etaria.toLocaleLowerCase().replace("anos", ""),
+                  : (item.faixa_etaria || "Sem dados")
+                      .toLocaleLowerCase()
+                      .replace("anos", ""),
               value: item.Total_Ocorrencias,
               fill: colorsChart[index % colorsChart.length],
             })),
           }}
-          style={{ width: "47%", marginLeft: 12, marginTop: 12 }}
         />
         <AreaChartCompo
           dataExport={chamadasDiaNoite}
@@ -279,21 +358,16 @@ const Dashboard: React.FC = () => {
           data={{
             title: "Período do Dia",
             dataInfo: chamadasDiaNoite.map((item, index) => ({
-              name: item.PeriodoDia.toLocaleLowerCase(),
+              name: (item.PeriodoDia || "Sem dados").toLocaleLowerCase(),
               value: item.Total_Ocorrencias,
               colors: colorsChart[index % colorsChart.length],
             })),
           }}
           layout="vertical"
-          style={{
-            width: "51%",
-            marginLeft: 9,
-            marginTop: 12,
-            padding: 3,
-            paddingRight: 7,
-          }}
         />
       </div>
+        </>
+      )}
     </div>
   );
 };
